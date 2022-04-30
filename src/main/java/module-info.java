@@ -7,6 +7,8 @@ module com.github.louiepietroni.surfsy {
     requires com.dlsc.formsfx;
     requires org.kordamp.bootstrapfx.core;
     requires eu.hansolo.tilesfx;
+//    This was added due to the async get for the api
+    requires java.net.http;
 
     opens com.github.louiepietroni.surfsy to javafx.fxml;
     exports com.github.louiepietroni.surfsy;
