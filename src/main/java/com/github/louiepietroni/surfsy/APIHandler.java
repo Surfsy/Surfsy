@@ -43,7 +43,6 @@ public class APIHandler {
         client.sendAsync(request, HttpResponse.BodyHandlers.ofString())
                 .thenApply(HttpResponse::body)
 //                .thenAccept(System.out::println)
-// TODO (THis isn't acually to do, just to make this stand out) comment line above and uncomment line below
                 .thenAccept(APIHandler::parse)
                 .join();
     }
