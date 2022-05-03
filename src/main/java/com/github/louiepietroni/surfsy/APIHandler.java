@@ -19,6 +19,7 @@ public class APIHandler {
 
 
     public static void main(String[] args) {
+//        (TODO) Just remember this can only be run 10 times each day. At the end of the returned JSON will be request count which is the number of requests we have made so far
 //        Define the coordinates you want to get the data for, this is a beach I found in devon
         double latitude = 50.316368;
         double longitude = -3.606911;
