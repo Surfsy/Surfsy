@@ -26,7 +26,7 @@ public class APIHandler {
 //        https://docs.stormglass.io/?_gl=1*1idq2mb*_ga*MTk3Nzk2ODkxMC4xNjUxMzA3Mzgz*_ga_79XDW52F27*MTY1MTU4NDA1Mi40LjAuMTY1MTU4NDA1Mi4w&_ga=2.110683266.620259759.1651507951-1977968910.1651307383#/weather
         List<String> parametersNeeded = Arrays.asList("waveHeight", "windDirection", "windSpeed", "waterTemperature");
         String parameters = String.join(",", parametersNeeded);
-//        This line creates the string which is used to get from the api
+//        This line creates the string which is used to get from the api, also using source as sg which means we guarantee we will always get exactly one value for everything
         String stormglassURL = String.format("https://api.stormglass.io/v2/weather/point?lat=%f&lng=%f&params=%s&source=sg", latitude, longitude, parameters);
 //        I just print out the url so you can see the format and it is as you expect
         System.out.println(stormglassURL);
