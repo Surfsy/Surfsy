@@ -9,6 +9,7 @@ module com.github.louiepietroni.surfsy {
     requires eu.hansolo.tilesfx;
 //    This was added due to the async get for the api
     requires java.net.http;
+    requires org.json;
 
     opens com.github.louiepietroni.surfsy to javafx.fxml;
     exports com.github.louiepietroni.surfsy;
