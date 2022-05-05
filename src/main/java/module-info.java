@@ -13,4 +13,6 @@ module com.github.louiepietroni.surfsy {
 
     opens com.github.louiepietroni.surfsy to javafx.fxml;
     exports com.github.louiepietroni.surfsy;
+    exports com.github.louiepietroni.surfsy.views;
+    opens com.github.louiepietroni.surfsy.views to javafx.fxml;
 }
