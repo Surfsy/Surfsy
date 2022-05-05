@@ -26,7 +26,8 @@ public class Surfsy extends Application {
         Button button1 = new Button("Button Number 1");
         Button button2 = new Button("Button Number 2");
 
-        VBox vbox = new VBox(button1, button2);
+        VBox vbox = new VBox();
+        vbox.getChildren().add(button1);
 
         Scene scene = new Scene(vbox, 350, 700);
         primaryStage.setScene(scene);
