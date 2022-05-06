@@ -1,13 +1,14 @@
 package com.github.louiepietroni.surfsy.views;
 
 import com.github.louiepietroni.surfsy.Location;
+import com.github.louiepietroni.surfsy.Surfsy;
+import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.SubScene;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
@@ -19,113 +20,165 @@ import javafx.scene.text.TextAlignment;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import java.util.zip.CheckedOutputStream;
 
 public class LocationView {
     private final Location location;
-    private final VBox vBox = new VBox();
-    private final ScrollPane scrollPane = new ScrollPane(vBox);
-    private final HBox hbox = new HBox();
-
-    private final VBox outside = new VBox(scrollPane, hbox);
-
-    private final Scene scene = new Scene(outside, 350, 700);
-    private final Text title;
-    private StackPane map;
-    private final List<StackPane> weatherFeatures = new ArrayList<>();
+//    The widgetVBox holds all widgets, such as name, map and all weather graphs
+    private final VBox widgetVBox = new VBox();
+//    The scroll pane holds the widgetVBox and allows us to scroll down it if needed
+    private final ScrollPane widgetScrollPane = new ScrollPane(widgetVBox);
+//    The daysHBox holds the day buttons along the bottom and the menu button
+    private final HBox daysHBox = new HBox();
+//    The outside VBox holds the scroll pane for the widgets and the daysHBox for the options along the bottom
+    private final VBox outsideVBox = new VBox(widgetScrollPane, daysHBox);
+//    The scene holds the whole view, inside it is the outside VBox
+    private final Scene scene = new Scene(outsideVBox, 350, 700);
+    private int day = 0;
 
 
     public LocationView(Location location) {
         this.location = location;
-        scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
-        scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
-        scrollPane.setBorder(Border.EMPTY);
-        hbox.setSpacing(-1);
+//        Configure views such as widgetVBox and widgetScrollPane properties
+        configureViews();
 
 //        Create title view
-        title = createTextView();
+        addLocationTitle();
 
 //        Create map view
-        map = createMapView();
+        addLocationMap();
 
 //        Create feature views
-        for (String feature : location.getWeatherFeatures()) {
-            List<Double> data = location.getData(feature);
-            weatherFeatures.add(createDataView(feature, data));
-        }
+        addLocationFeatures();
 
-//        Create day views
-        for (int i = 0; i < 7; i++) {
-            hbox.getChildren().add(createDayView(i));
-        }
-        Button button = new Button();
-        button.setPrefSize(100, 42);
-        button.setBackground(new Background(new BackgroundFill(Color.DARKBLUE, null, null)));
-        hbox.getChildren().add(button);
-        button.setOnAction(e -> System.out.println("This"));
+//        Create day buttons
+        addDayButtons();
 
-        button.getOnMouseClicked();
-
-        showElements();
+//        Create menu button
+        addMenuButton();
     }
 
-    private void showElements() {
-        vBox.setSpacing(5);
-        vBox.getChildren().addAll(title, map);
-        vBox.getChildren().addAll(weatherFeatures);
+    private void configureViews() {
+//        Set up with widget scroll pane
+        widgetScrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+        widgetScrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+        widgetScrollPane.setBorder(Border.EMPTY);
+
+//        Set up the widget view box
+        widgetVBox.setSpacing(5);
     }
 
     public Scene getScene() {
+//        Return the scene for this page, also reset the scroll so its always back at the top
+        widgetScrollPane.setVvalue(0);
         return scene;
     }
 
-    public static StackPane createDataView(String name, List<Double> data) {
+    private void addLocationFeatures() {
+//        For each feature of this location, get its data for the current day and add the feature
+        for (String feature : location.getWeatherFeatures()) {
+            List<Double> data = location.getData(feature, day);
+            StackPane featureView = createFeatureView(feature, data);
+            addWidgetToWidgetVBox(featureView);
+        }
+    }
+
+    private StackPane createFeatureView(String name, List<Double> data) {
+//        Create the view for a feature, with ist name and graph
+// TODO: Have the name of the feature and a nice plot, which will need to be made with lines
+
         StackPane dataView = new StackPane();
         dataView.setMinSize(330, 120);
-//TODO: We need to plot the data, we need to create our own plot class which plots using lines
-        NumberAxis xAxis = new NumberAxis(0, 24, 1);
-        NumberAxis yAxis = new NumberAxis(0, 1, 1);
-        LineChart linechart = new LineChart(xAxis, yAxis);
-        XYChart.Series series = new XYChart.Series();
-        for (int i = 0; i < 24; i++) {
-            series.getData().add(new XYChart.Data(i, data.get(i)));
-        }
-        linechart.getData().add(series);
-        linechart.setMaxSize(300, 40);
-
         Rectangle rect = new Rectangle(330, 120);
         Random rand = new Random();
         rect.setFill(Color.color(rand.nextDouble(), rand.nextDouble(), rand.nextDouble()));
         dataView.getChildren().add(rect);
 
-//        dataView.getChildren().add(linechart);
+        Text text = new Text(name);
+        dataView.getChildren().add(text);
+        Text dataText = new Text(Double.toString(data.get(0)));
+        StackPane.setAlignment(dataText, Pos.BOTTOM_CENTER);
+
+        dataView.getChildren().add(dataText);
+
+
+
         return dataView;
     }
 
-    public StackPane createMapView() {
+    private void addLocationMap() {
+//        Create the location map
+//        TODO: Create a map view of the location
         StackPane mapView = new StackPane();
+        mapView.setMinSize(330, 240);
         Rectangle rect = new Rectangle(330, 240);
-
         Random rand = new Random();
         rect.setFill(Color.color(rand.nextDouble(), rand.nextDouble(), rand.nextDouble()));
         mapView.getChildren().add(rect);
-        return mapView;
+
+        Text mapText = new Text("Map");
+        mapView.getChildren().add(mapText);
+
+        addWidgetToWidgetVBox(mapView);
     }
 
-    public Text createTextView() {
+    private void addLocationTitle() {
+//        Create and style the location title
+//        TODO: Style this title as desired
         Text text = new Text(location.getName());
         text.setFont(Font.font ("Verdana", 40));
         text.setWrappingWidth(350);
         text.setTextAlignment(TextAlignment.CENTER);
-        return text;
+        addWidgetToWidgetVBox(text);
     }
 
-    public Button createDayView(int i) {
-        Button button = new Button(Integer.toString(i));
-        button.setMinSize(42, 42);
-        button.setBorder(new Border(new BorderStroke(Color.TEAL, BorderStrokeStyle.SOLID, null, BorderStroke.THIN)));
-        button.setBackground(new Background(new BackgroundFill(Color.LIGHTSKYBLUE, null, null)));
-        return button;
+    private void addDayButtons() {
+//        Create a button for each day and add to the daysHBox
+        for (int i = 0; i < 7; i++) {
+            StackPane dayButton = createDayButton(i);
+            daysHBox.getChildren().add(dayButton);
+        }
+    }
+
+    private StackPane createDayButton(int buttonDay) {
+//        Creates a button for a day, which will update the displayed data
+//        TODO: Style this to be a button corresponding to i days from today
+        StackPane dayButton = new StackPane();
+        dayButton.setMinSize(42, 42);
+        dayButton.setBackground(new Background(new BackgroundFill(Color.LIGHTSKYBLUE, null, null)));
+        dayButton.setBorder(new Border(new BorderStroke(Color.TEAL, BorderStrokeStyle.SOLID, null, BorderStroke.THIN)));
+        dayButton.setOnMouseClicked(e -> updateDay(buttonDay));
+
+        Text dayName = new Text(Integer.toString(buttonDay));
+        dayButton.getChildren().add(dayName);
+
+        return dayButton;
+    }
+
+    private void addMenuButton() {
+//        Add the menu button to the daysHBox
+//        TODO: Style the menu button
+        StackPane menuButton = new StackPane();
+        menuButton.setMinSize(56, 42);
+        menuButton.setBackground(new Background(new BackgroundFill(Color.DARKCYAN, null, null)));
+        menuButton.setBorder(new Border(new BorderStroke(Color.TEAL, BorderStrokeStyle.SOLID, null, BorderStroke.THIN)));
+        menuButton.setOnMouseClicked(e -> Surfsy.getViewManager().setSceneToFavouritesView());
+
+        Text menuText = new Text("=");
+        menuButton.getChildren().add(menuText);
+
+        daysHBox.getChildren().add(menuButton);
+    }
+
+    private void addWidgetToWidgetVBox(Node widget) {
+//        Adds widgets to the widgetVBox
+        widgetVBox.getChildren().add(widget);
+    }
+
+    private void updateDay(int day) {
+//        Update the day, remove the features from the widgetVBox and add create the updated ones
+        this.day = day;
+        widgetVBox.getChildren().remove(2, location.getWeatherFeatures().size() + 2);
+        addLocationFeatures();
     }
 }
 

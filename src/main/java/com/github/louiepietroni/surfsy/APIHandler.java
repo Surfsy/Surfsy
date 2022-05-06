@@ -20,6 +20,7 @@ public class APIHandler {
 
 
     public static void main(String[] args) {
+        List<String> parameterOptions = Arrays.asList("airTemperature", "cloudCover", "currentDirection", "currentSpeed", "precipitation", "seaLevel", "visibility", "waterTemperature", "waveDirection", "waveHeight", "wavePeriod", "windDirection", "windSpeed");
         /*
 //        Define the coordinates you want to get the data for, this is a beach I found in devon
         double latitude = 50.316368;
