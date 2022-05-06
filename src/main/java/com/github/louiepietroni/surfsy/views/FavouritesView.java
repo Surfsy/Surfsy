@@ -40,11 +40,12 @@ public class FavouritesView {
     }
 
     private void configureViews() {
-//        Setup the scrollpane and the locationsVBox
+//        Setup the scrollpane
         favouritesScrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         favouritesScrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         favouritesScrollPane.setBorder(Border.EMPTY);
 
+//        Setup the favourites vBox
         favouritesVBox.setSpacing(5);
     }
 
@@ -80,6 +81,8 @@ public class FavouritesView {
     }
 
     private void addFavouritesTitle() {
+//        Add the favourites title
+//        TODO: Style to favourites title
         Text text = new Text("Favourites");
         text.setFont(Font.font ("Verdana", 40));
         text.setWrappingWidth(350);

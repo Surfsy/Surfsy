@@ -6,13 +6,9 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.chart.LineChart;
-import javafx.scene.chart.NumberAxis;
-import javafx.scene.chart.XYChart;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
@@ -21,7 +17,6 @@ import javafx.scene.text.TextAlignment;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import java.util.Stack;
 
 public class LocationView {
     private final Location location;
@@ -81,16 +76,18 @@ public class LocationView {
         widgetScrollPane.setBorder(Border.EMPTY);
         widgetScrollPane.setMinSize(352, 658);
 
-//        Set up the widget view box
+//        Set up the widget vBox
         widgetVBox.setSpacing(5);
         widgetVBox.setAlignment(Pos.CENTER);
         widgetVBox.setPadding(new Insets(0, 0, 5, 0));
         widgetVBox.setBackground(new Background(new BackgroundFill(Color.LIGHTSLATEGREY, null, null)));
 
+//        Set up the edit list vBox
         editListVBox.setBackground(new Background(new BackgroundFill(Color.LIGHTSLATEGREY, null, null)));
         editListVBox.setPadding(new Insets(0, 0, 0, 50));
         editListVBox.setSpacing(4);
 
+//        Set up the outside vBox
         outsideVBox.setMinSize(350, 700);
         outsideVBox.setAlignment(Pos.CENTER);
     }

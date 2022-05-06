@@ -4,7 +4,7 @@ import java.util.*;
 
 public class Location {
 //    List of all possible weather features for the API
-    private static final List<String> allWeatherFeatures = Arrays.asList("airTemperature", "cloudCover", "currentDirection", "currentSpeed", "precipitation", "seaLevel", "visibility", "waterTemperature", "waveDirection", "waveHeight", "wavePeriod", "windDirection", "windSpeed");
+    private static final List<String> allWeatherFeatures = Arrays.asList("Wind Speed", "Wind Direction", "Wave Height", "Wave Period", "Air Temperature", "Sea Level", "Water Temperature", "Cloud Cover", "Current Direction", "Current Speed", "Precipitation", "Visibility", "Wave Direction");
 
     private final double latitude;
     private final double longitude;
@@ -23,7 +23,7 @@ public class Location {
         this.latitude = latitude;
         this.longitude = longitude;
         this.name = name;
-        this.weatherFeatures = new ArrayList<>(Arrays.asList("windSpeed", "waveHeight", "waterTemperature", "windDirection"));
+        this.weatherFeatures = new ArrayList<>(Arrays.asList("Wind Speed", "Wave Height", "Water Temperature", "Wind Direction"));
     }
 
     public Location(double latitude, double longitude, String name, String rawData, List<String> weatherFeatures) {
@@ -74,7 +74,7 @@ public class Location {
 
     private void parseFeature(String feature) {
 //        Parse raw data to get out the data corresponding to the passes in feature
-//        TODO: Parse the string in rawData for the feature passed in and save in the weatherData map from string to list of double
+//        TODO: Parse the string in rawData for the feature passed in and save in the weatherData map from string to list of double. Will likely want to convert to API string
         List<Double> data = new ArrayList<>();
         Random rand = new Random();
         for (int i = 0; i < 168; i++) {
@@ -140,5 +140,19 @@ public class Location {
 //        Create a Location from a passed in data or file
 //        TODO: From what is passed in, this should load the data and return the location object
         return new Location(1, 2, "");
+    }
+
+    public static List<String> getAllWeatherFeaturesForAPI() {
+//        Get list of all features in the format needed for the API
+        List<String> allWeatherFeaturesForAPI = new ArrayList<String>();
+        for (String feature: allWeatherFeatures) {
+            allWeatherFeaturesForAPI.add(convertFeatureNameForAPI(feature));
+        }
+        return allWeatherFeaturesForAPI;
+    }
+
+    public static String convertFeatureNameForAPI(String feature) {
+//        Convert from feature name to format for the API
+        return feature.substring(0, 1).toLowerCase() + feature.substring(1).replaceAll("\\s+","");
     }
 }
