@@ -9,6 +9,8 @@ import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Button;
+import javafx.scene.control.ListView;
+import javafx.scene.control.RadioButton;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
@@ -20,20 +22,30 @@ import javafx.scene.text.TextAlignment;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.Stack;
 
 public class LocationView {
     private final Location location;
 //    The widgetVBox holds all widgets, such as name, map and all weather graphs
     private final VBox widgetVBox = new VBox();
+//    The scroll VBox is in the scroll pane and holds the widget Vbox and the edit Vbox when needed
+    private final VBox scrollVBox = new VBox(widgetVBox);
 //    The scroll pane holds the widgetVBox and allows us to scroll down it if needed
-    private final ScrollPane widgetScrollPane = new ScrollPane(widgetVBox);
+    private final ScrollPane widgetScrollPane = new ScrollPane(scrollVBox);
 //    The daysHBox holds the day buttons along the bottom and the menu button
     private final HBox daysHBox = new HBox();
 //    The outside VBox holds the scroll pane for the widgets and the daysHBox for the options along the bottom
     private final VBox outsideVBox = new VBox(widgetScrollPane, daysHBox);
 //    The scene holds the whole view, inside it is the outside VBox
     private final Scene scene = new Scene(outsideVBox, 350, 700);
+//    Keep track of the day we are showing data for, with 0 being today
     private int day = 0;
+
+//    The button which will be pressed to change into edit mode
+    private StackPane editFeatureButton;
+
+//    The Vbox which will contain all the toggles for showing features and will be shown when in edit mode
+    private final VBox editListVBox = new VBox();
 
 
     public LocationView(Location location) {
@@ -47,6 +59,9 @@ public class LocationView {
 //        Create map view
         addLocationMap();
 
+//        Create edit feature button
+        addEditFeatureButton();
+
 //        Create feature views
         addLocationFeatures();
 
@@ -55,6 +70,9 @@ public class LocationView {
 
 //        Create menu button
         addMenuButton();
+
+//        Create edit list view
+        createEditListView();
     }
 
     private void configureViews() {
@@ -62,9 +80,11 @@ public class LocationView {
         widgetScrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         widgetScrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         widgetScrollPane.setBorder(Border.EMPTY);
+        widgetScrollPane.setMinSize(350, 658);
 
 //        Set up the widget view box
         widgetVBox.setSpacing(5);
+        widgetVBox.setAlignment(Pos.CENTER);
     }
 
     public Scene getScene() {
@@ -78,12 +98,12 @@ public class LocationView {
         for (String feature : location.getWeatherFeatures()) {
             List<Double> data = location.getData(feature, day);
             StackPane featureView = createFeatureView(feature, data);
-            addWidgetToWidgetVBox(featureView);
+            widgetVBox.getChildren().add(widgetVBox.getChildren().size() - 1, featureView);
         }
     }
 
     private StackPane createFeatureView(String name, List<Double> data) {
-//        Create the view for a feature, with ist name and graph
+//        Create the view for a feature, with its name and graph
 // TODO: Have the name of the feature and a nice plot, which will need to be made with lines
 
         StackPane dataView = new StackPane();
@@ -99,8 +119,6 @@ public class LocationView {
         StackPane.setAlignment(dataText, Pos.BOTTOM_CENTER);
 
         dataView.getChildren().add(dataText);
-
-
 
         return dataView;
     }
@@ -118,7 +136,7 @@ public class LocationView {
         Text mapText = new Text("Map");
         mapView.getChildren().add(mapText);
 
-        addWidgetToWidgetVBox(mapView);
+        widgetVBox.getChildren().add(mapView);
     }
 
     private void addLocationTitle() {
@@ -128,7 +146,7 @@ public class LocationView {
         text.setFont(Font.font ("Verdana", 40));
         text.setWrappingWidth(350);
         text.setTextAlignment(TextAlignment.CENTER);
-        addWidgetToWidgetVBox(text);
+        widgetVBox.getChildren().add(text);
     }
 
     private void addDayButtons() {
@@ -169,15 +187,76 @@ public class LocationView {
         daysHBox.getChildren().add(menuButton);
     }
 
-    private void addWidgetToWidgetVBox(Node widget) {
-//        Adds widgets to the widgetVBox
-        widgetVBox.getChildren().add(widget);
+    private void addEditFeatureButton() {
+//        Add the edit button which appears below the features and starts edit mode
+        editFeatureButton = new StackPane();
+        editFeatureButton.setMaxSize(100, 40);
+        editFeatureButton.setBackground(new Background(new BackgroundFill(Color.DARKCYAN, new CornerRadii(10), null)));
+        editFeatureButton.setBorder(new Border(new BorderStroke(Color.TEAL, BorderStrokeStyle.SOLID, new CornerRadii(10), BorderStroke.THIN)));
+        editFeatureButton.setOnMouseClicked(e -> enterEditMode());
+
+        Text editText = new Text("Edit widgets");
+        editFeatureButton.getChildren().add(editText);
+
+        widgetVBox.getChildren().add(editFeatureButton);
     }
+
+    private void createEditListView() {
+//        Create the radioButtons which will be used to toggle features and are stored in the editListVBox
+        for (String possibleFeature : Location.getAllWeatherFeatures()) {
+            boolean selected = location.getWeatherFeatures().contains(possibleFeature);
+            RadioButton editListButton = createEditListButton(possibleFeature, selected);
+            editListVBox.getChildren().add(editListButton);
+        }
+    }
+
+    private RadioButton createEditListButton(String feature, boolean selected) {
+//        Create a radio button for the feature
+//        TODO: Style this radio button as desired
+        RadioButton editListButton = new RadioButton(feature);
+        editListButton.setSelected(selected);
+        return editListButton;
+    }
+
+    private void enterEditMode() {
+//        Called by the edit button, shows the editVBox which includes all the toggles
+        scrollVBox.getChildren().add(editListVBox);
+        editFeatureButton.setOnMouseClicked(e -> exitEditMode());
+        editFeatureButton.getChildren().clear();
+        Text editText = new Text("Confirm");
+        editFeatureButton.getChildren().add(editText);
+    }
+
+    private void exitEditMode() {
+
+        scrollVBox.getChildren().remove(editListVBox);
+        editFeatureButton.setOnMouseClicked(e -> enterEditMode());
+        editFeatureButton.getChildren().clear();
+        Text editText = new Text("Edit widgets");
+        editFeatureButton.getChildren().add(editText);
+
+        saveEditListToLocation();
+    }
+
+    private void saveEditListToLocation() {
+        for (Node editListItem :  editListVBox.getChildren()) {
+            RadioButton editListButton = (RadioButton) editListItem;
+            String feature = editListButton.getText();
+            boolean selected = editListButton.isSelected();
+            location.updateFeature(feature, selected);
+        }
+        updateLocationFeatures();
+    }
+
 
     private void updateDay(int day) {
 //        Update the day, remove the features from the widgetVBox and add create the updated ones
         this.day = day;
-        widgetVBox.getChildren().remove(2, location.getWeatherFeatures().size() + 2);
+        updateLocationFeatures();
+    }
+
+    private void updateLocationFeatures() {
+        widgetVBox.getChildren().remove(2, widgetVBox.getChildren().size() - 1);
         addLocationFeatures();
     }
 }
