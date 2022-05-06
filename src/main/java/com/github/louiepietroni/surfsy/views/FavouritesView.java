@@ -64,7 +64,7 @@ public class FavouritesView {
 
     private StackPane createLocationSummary(Location location) {
 //        Create a summary of a location
-//        TODO: Style the summary and include information about its data
+//        TODO: Style the summary and include information about the locations data
         StackPane locationSummary = new StackPane();
         locationSummary.setMinSize(330, 120);
 

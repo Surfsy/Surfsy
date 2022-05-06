@@ -2,18 +2,17 @@ package com.github.louiepietroni.surfsy.views;
 
 import com.github.louiepietroni.surfsy.Location;
 import com.github.louiepietroni.surfsy.Surfsy;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
-import javafx.scene.control.Button;
-import javafx.scene.control.ListView;
-import javafx.scene.control.RadioButton;
-import javafx.scene.control.ScrollPane;
+import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
@@ -80,11 +79,20 @@ public class LocationView {
         widgetScrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         widgetScrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         widgetScrollPane.setBorder(Border.EMPTY);
-        widgetScrollPane.setMinSize(350, 658);
+        widgetScrollPane.setMinSize(352, 658);
 
 //        Set up the widget view box
         widgetVBox.setSpacing(5);
         widgetVBox.setAlignment(Pos.CENTER);
+        widgetVBox.setPadding(new Insets(0, 0, 5, 0));
+        widgetVBox.setBackground(new Background(new BackgroundFill(Color.LIGHTSLATEGREY, null, null)));
+
+        editListVBox.setBackground(new Background(new BackgroundFill(Color.LIGHTSLATEGREY, null, null)));
+        editListVBox.setPadding(new Insets(0, 0, 0, 50));
+        editListVBox.setSpacing(4);
+
+        outsideVBox.setMinSize(350, 700);
+        outsideVBox.setAlignment(Pos.CENTER);
     }
 
     public Scene getScene() {
@@ -228,7 +236,7 @@ public class LocationView {
     }
 
     private void exitEditMode() {
-
+//        Called by the edit button when in edit mode to exit edit mode
         scrollVBox.getChildren().remove(editListVBox);
         editFeatureButton.setOnMouseClicked(e -> enterEditMode());
         editFeatureButton.getChildren().clear();
@@ -239,23 +247,26 @@ public class LocationView {
     }
 
     private void saveEditListToLocation() {
+//        Take the data from the radio buttons and update the location with the new features, then save the location to file
         for (Node editListItem :  editListVBox.getChildren()) {
             RadioButton editListButton = (RadioButton) editListItem;
             String feature = editListButton.getText();
             boolean selected = editListButton.isSelected();
             location.updateFeature(feature, selected);
         }
+        location.saveLocation();
         updateLocationFeatures();
     }
 
 
     private void updateDay(int day) {
-//        Update the day, remove the features from the widgetVBox and add create the updated ones
+//        Update the day, then call updateLocationFeatures to redraw the updated features
         this.day = day;
         updateLocationFeatures();
     }
 
     private void updateLocationFeatures() {
+//        Remove the features and then call the function to create them, so they are all updated
         widgetVBox.getChildren().remove(2, widgetVBox.getChildren().size() - 1);
         addLocationFeatures();
     }
