@@ -114,8 +114,7 @@ public class LocationView {
         StackPane dataView = new StackPane();
         dataView.setMinSize(330, 120);
         Rectangle rect = new Rectangle(330, 120);
-        Random rand = new Random();
-        rect.setFill(Color.color(rand.nextDouble(), rand.nextDouble(), rand.nextDouble()));
+        rect.setFill(Color.color(data.get(0), data.get(1), data.get(2)));
         dataView.getChildren().add(rect);
 
         Text text = new Text(name);
