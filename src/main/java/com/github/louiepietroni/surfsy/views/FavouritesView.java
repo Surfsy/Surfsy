@@ -2,6 +2,7 @@ package com.github.louiepietroni.surfsy.views;
 
 import com.github.louiepietroni.surfsy.Location;
 import com.github.louiepietroni.surfsy.Surfsy;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.ScrollPane;
@@ -45,8 +46,13 @@ public class FavouritesView {
         favouritesScrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         favouritesScrollPane.setBorder(Border.EMPTY);
 
+
 //        Setup the favourites vBox
         favouritesVBox.setSpacing(5);
+        favouritesVBox.setBackground(new Background(new BackgroundFill(Color.LIGHTSLATEGREY, null, null)));
+        favouritesVBox.setMinSize(350, 700);
+
+
     }
 
     public Scene getScene() {

@@ -76,6 +76,7 @@ public class LocationView {
         widgetScrollPane.setBorder(Border.EMPTY);
         widgetScrollPane.setMinSize(352, 658);
 
+
 //        Set up the widget vBox
         widgetVBox.setSpacing(5);
         widgetVBox.setAlignment(Pos.CENTER);
@@ -109,8 +110,7 @@ public class LocationView {
 
     private StackPane createFeatureView(String name, List<Double> data) {
 //        Create the view for a feature, with its name and graph
-// TODO: Have the name of the feature and a nice plot, which will need to be made with lines
-
+//        TODO: Have the name of the feature and a nice plot, which will need to be made with lines
         StackPane dataView = new StackPane();
         dataView.setMinSize(330, 120);
         Rectangle rect = new Rectangle(330, 120);
@@ -159,6 +159,7 @@ public class LocationView {
             StackPane dayButton = createDayButton(i);
             daysHBox.getChildren().add(dayButton);
         }
+        updateDayButtons(0);
     }
 
     private StackPane createDayButton(int buttonDay) {
@@ -166,7 +167,6 @@ public class LocationView {
 //        TODO: Style this to be a button corresponding to i days from today
         StackPane dayButton = new StackPane();
         dayButton.setMinSize(42, 42);
-        dayButton.setBackground(new Background(new BackgroundFill(Color.LIGHTSKYBLUE, null, null)));
         dayButton.setBorder(new Border(new BorderStroke(Color.TEAL, BorderStrokeStyle.SOLID, null, BorderStroke.THIN)));
         dayButton.setOnMouseClicked(e -> updateDay(buttonDay));
 
@@ -256,9 +256,20 @@ public class LocationView {
 
 
     private void updateDay(int day) {
-//        Update the day, then call updateLocationFeatures to redraw the updated features
+//        Update the day, change the selected day button, then call updateLocationFeatures to redraw the updated features
         this.day = day;
+        updateDayButtons(day);
         updateLocationFeatures();
+    }
+
+    private void updateDayButtons(int day) {
+//        Reset all the buttons, the update the selected one
+        for (int i = 0; i < 7; i++) {
+            StackPane dayButton = (StackPane) daysHBox.getChildren().get(i);
+            dayButton.setBackground(new Background(new BackgroundFill(Color.LIGHTSKYBLUE, null, null)));
+        }
+        StackPane selectedDayButton = (StackPane) daysHBox.getChildren().get(day);
+        selectedDayButton.setBackground(new Background(new BackgroundFill(Color.CYAN, null, null)));
     }
 
     private void updateLocationFeatures() {
