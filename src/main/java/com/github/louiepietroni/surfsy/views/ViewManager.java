@@ -29,7 +29,7 @@ public class ViewManager {
     }
 
     private void loadLocations() {
-//        TODO: create a location for each saved location by calling Location.loadLocation(), passing in a file or something and save all these to locations as a list
+//        TODO: create a location for each saved location by calling Location.loadFavourites(), passing in a file or something and save all these to locations as a list
 
         Location thurlestoneBeach = new Location(50.25993, -3.86041, "Thurlestone Beach");
         Location fistralBay = new Location(50.41747,-5.10384, "Fistral Bay");
