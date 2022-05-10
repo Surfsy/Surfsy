@@ -136,15 +136,10 @@ public class Location {
         return allWeatherFeatures;
     }
 
-    public static Location loadFavourite() {
-//        Create a Location from a passed in data or file
-//        TODO: From what is passed in, this should load the data and return the location object
-        return new Location(1, 2, "");
-    }
 
     public static Location loadFavourites() {
-//        Create a Location from a passed in data or file
-//        TODO: From what is passed in, this should load the data and return the location object
+//        Return a list of all locations which have breen saved
+//        TODO: Return a list of all locations which have breen saved
         return new Location(1, 2, "");
     }
 
