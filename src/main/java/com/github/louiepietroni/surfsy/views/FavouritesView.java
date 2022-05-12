@@ -19,10 +19,13 @@ public class FavouritesView {
     private final List<Location> favourites;
 //    The vbox holds the title and all the favourite locations
     private final VBox favouritesVBox = new VBox();
+    private final HBox plusBox = new HBox();
 //    The scroll pane holds the favouritesVBox and allows it to scroll if needed
     private final ScrollPane favouritesScrollPane = new ScrollPane(favouritesVBox);
+
+    private final VBox BigBox = new VBox(favouritesScrollPane,plusBox);//Lost in a dream, snake eater
 //    The scene holds the whole view which is inside the scroll pane
-    private final Scene scene = new Scene(favouritesScrollPane, 350, 700);
+    private final Scene scene = new Scene(BigBox, 350, 700);
 
 
     public FavouritesView(List<Location> favourites) {
@@ -36,6 +39,8 @@ public class FavouritesView {
 
 //        Create location summaries
         addFavouritesSummaries();
+//        Add new beach
+        addFavouritesAddition();
     }
 
     private void configureViews() {
@@ -49,6 +54,9 @@ public class FavouritesView {
         favouritesVBox.setSpacing(5);
         favouritesVBox.setBackground(new Background(new BackgroundFill(Color.LIGHTSLATEGREY, null, null)));
         favouritesVBox.setMinSize(350, 700);
+        favouritesScrollPane.setMinSize(350,650);
+        BigBox.setMinSize(350,700);
+        BigBox.setBackground(new Background(new BackgroundFill(Color.LIGHTSLATEGREY,null,null)));
 
 
     }
@@ -97,6 +105,27 @@ public class FavouritesView {
     private void addWidgetToFavouritesVBox(Node widget) {
 //        Adds widgets to the favouritesVBox
         favouritesVBox.getChildren().add(widget);
+    }
+
+    private void addFavouritesAddition(){
+        HBox box = new HBox();
+        box.rotateProperty();
+        StackPane plus = new StackPane();
+        plus.setMinSize(20,20);
+
+        Rectangle rect = new Rectangle(40,40);
+        Random rand = new Random();
+        rect.setFill(Color.color(rand.nextDouble(),rand.nextDouble(),rand.nextDouble()));
+
+        Rectangle buff = new Rectangle(310,40);
+        buff.setFill(Color.LIGHTSLATEGREY);
+        plus.getChildren().add(rect);
+        Text text = new Text("+");
+        plus.getChildren().add(text);
+        plusBox.getChildren().add(buff);
+        plusBox.getChildren().add(plus);
+        //plus.onMouseClickedProperty(foo());
+
     }
 }
 
