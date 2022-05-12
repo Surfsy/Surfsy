@@ -29,6 +29,7 @@ public class FavouritesView {
 
 
     public FavouritesView(List<Location> favourites) {
+        scene.getStylesheets().add("styles.css");
         this.favourites = favourites;
 
 //        Configure the views of the scene
@@ -52,7 +53,6 @@ public class FavouritesView {
 
 //        Setup the favourites vBox
         favouritesVBox.setSpacing(5);
-        favouritesVBox.setBackground(new Background(new BackgroundFill(Color.LIGHTSLATEGREY, null, null)));
         favouritesVBox.setMinSize(350, 700);
         favouritesScrollPane.setMinSize(350,650);
         BigBox.setMinSize(350,700);
