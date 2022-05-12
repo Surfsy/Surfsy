@@ -78,15 +78,14 @@ public class LocationView {
 		widgetScrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
 		widgetScrollPane.setBorder(Border.EMPTY);
 		widgetScrollPane.setMinSize(352, 658);
+        widgetScrollPane.setStyle("-fx-background: lightslategray;");
 
 		// Set up the widget vBox
 		widgetVBox.setSpacing(5);
 		widgetVBox.setAlignment(Pos.CENTER);
 		widgetVBox.setPadding(new Insets(0, 0, 5, 0));
-		widgetVBox.setBackground(new Background(new BackgroundFill(Color.LIGHTSLATEGREY, null, null)));
 
 		// Set up the edit list vBox
-		editListVBox.setBackground(new Background(new BackgroundFill(Color.LIGHTSLATEGREY, null, null)));
 		editListVBox.setPadding(new Insets(0, 0, 0, 50));
 		editListVBox.setSpacing(4);
 
