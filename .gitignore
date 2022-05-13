@@ -8,7 +8,6 @@ target/
 .idea/jarRepositories.xml
 .idea/compiler.xml
 .idea/libraries/
-.idea/encodings.xml
 .idea/runConfigurations.xml
 *.iws
 *.iml
