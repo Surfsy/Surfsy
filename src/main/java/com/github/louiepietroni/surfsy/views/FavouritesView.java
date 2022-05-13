@@ -86,6 +86,7 @@ public class FavouritesView {
         rect.setFill(Color.color(rand.nextDouble(), rand.nextDouble(), rand.nextDouble()));
         locationSummary.getChildren().add(rect);
         Text text = new Text(location.getName());
+        text.getStyleClass().add("text");
         locationSummary.getChildren().add(text);
         locationSummary.setOnMouseClicked(e -> Surfsy.getViewManager().setSceneToLocationView(location));
 
@@ -96,6 +97,7 @@ public class FavouritesView {
 //        Add the favourites title
 //        TODO: Style to favourites title
         Text text = new Text("Favourites");
+        text.getStyleClass().add("text");
         text.setFont(Font.font ("Verdana", 40));
         text.setWrappingWidth(350);
         text.setTextAlignment(TextAlignment.CENTER);
@@ -121,6 +123,7 @@ public class FavouritesView {
         buff.setFill(Color.LIGHTSLATEGREY);
         plus.getChildren().add(rect);
         Text text = new Text("+");
+        text.getStyleClass().add("text");
         plus.getChildren().add(text);
         plusBox.getChildren().add(buff);
         plusBox.getChildren().add(plus);

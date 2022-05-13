@@ -1,3 +1,7 @@
 .root{
 	-fx-background: "lightslategray";
 }
+
+.text{
+	-fx-fill: "black";
+}

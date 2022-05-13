@@ -129,6 +129,7 @@ public class LocationView {
 		dataView.getChildren().add(rect);
 
 		Text text = new Text(name);
+		text.getStyleClass().add("text");
 		dataView.getChildren().add(text);
 		Text dataText = new Text(Double.toString(data.get(0)));
 		StackPane.setAlignment(dataText, Pos.BOTTOM_CENTER);
@@ -149,6 +150,7 @@ public class LocationView {
 		mapView.getChildren().add(rect);
 
 		Text mapText = new Text("Map");
+		mapText.getStyleClass().add("text");
 		mapView.getChildren().add(mapText);
 
 		widgetVBox.getChildren().add(mapView);
@@ -158,6 +160,7 @@ public class LocationView {
 		// Create and style the location title
 		// TODO: Style this title as desired
 		Text text = new Text(location.getName());
+		text.getStyleClass().add("text");
 		text.setFont(Font.font("Verdana", 40));
 		text.setWrappingWidth(350);
 		text.setTextAlignment(TextAlignment.CENTER);
@@ -182,6 +185,7 @@ public class LocationView {
 		dayButton.setOnMouseClicked(e -> updateDay(buttonDay));
 
 		Text dayName = new Text(Integer.toString(buttonDay));
+		dayName.getStyleClass().add("text");
 		dayButton.getChildren().add(dayName);
 
 		return dayButton;
@@ -198,6 +202,7 @@ public class LocationView {
 		menuButton.setOnMouseClicked(e -> Surfsy.getViewManager().setSceneToFavouritesView());
 
 		Text menuText = new Text("=");
+		menuText.getStyleClass().add("text");
 		menuButton.getChildren().add(menuText);
 
 		daysHBox.getChildren().add(menuButton);
