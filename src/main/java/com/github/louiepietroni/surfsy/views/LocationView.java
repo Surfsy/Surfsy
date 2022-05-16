@@ -60,6 +60,7 @@ public class LocationView {
 		public TitleWidget() {
 			super();
 			Text text = new Text(location.getName());
+			text.getStyleClass().add("text");
 			text.setFont(h1);
 			text.setWrappingWidth(350);
 			text.setTextAlignment(TextAlignment.CENTER);
@@ -89,7 +90,8 @@ public class LocationView {
 			super();
 
 			// Create the label text for this view
-			var text = new Text(name);
+			Text text = new Text(name);
+			text.getStyleClass().add("text");
 			text.setFont(p);
 
 			// defining the axes
@@ -177,7 +179,8 @@ public class LocationView {
 					.build());
 
 			// create the text
-			var mapText = new Text();
+			Text mapText = new Text();
+			mapText.getStyleClass().add("text");
 			mapText.textProperty().bind(Bindings.format("Map: %s", mapView.centerProperty()));
 
 			// Create the holder and populate it
@@ -232,6 +235,7 @@ public class LocationView {
 	private final VBox editListVBox = new VBox();
 
 	public LocationView(Location location) {
+		scene.getStylesheets().add("styles.css");
 		this.location = location;
 
 		// Create widgets and fill them with data
@@ -255,7 +259,7 @@ public class LocationView {
 		configureViews();
 
 		// Init widget list with title, map, and all selected features in the location
-		activeWidgets = new ArrayList<Widget>(List.of(new TitleWidget(), new MapWidget()));
+		activeWidgets = new ArrayList<>(List.of(new TitleWidget(), new MapWidget()));
 		for (String feature : location.getWeatherFeatures()) {
 			activeWidgets.add(new GraphWidget(feature));
 		}
@@ -276,13 +280,11 @@ public class LocationView {
 		widgetScrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
 		widgetScrollPane.setBorder(Border.EMPTY);
 		widgetScrollPane.setMinSize(352, 658);
-		widgetScrollPane.setStyle("-fx-background: lightslategray;");
 
 		// Set up the widget vBox
 		widgetVBox.setSpacing(5);
 		widgetVBox.setAlignment(Pos.CENTER);
 		widgetVBox.setPadding(new Insets(0, 0, 5, 0));
-		widgetVBox.setBackground(new Background(new BackgroundFill(Color.LIGHTSLATEGREY, null, null)));
 		widgetVBox.getChildren().clear();
 
 		// Set up the edit list vBox
@@ -336,6 +338,7 @@ public class LocationView {
 		dayButton.setOnMouseClicked(e -> updateDay(buttonDay));
 
 		Text dayName = new Text(Integer.toString(buttonDay));
+		dayName.getStyleClass().add("text");
 		dayButton.getChildren().add(dayName);
 
 		return dayButton;
@@ -352,6 +355,7 @@ public class LocationView {
 		menuButton.setOnMouseClicked(e -> Surfsy.getViewManager().setSceneToFavouritesView());
 
 		Text menuText = new Text("=");
+		menuText.getStyleClass().add("text");
 		menuButton.getChildren().add(menuText);
 
 		daysHBox.getChildren().add(menuButton);
@@ -367,6 +371,7 @@ public class LocationView {
 		editFeatureButton.setOnMouseClicked(e -> enterEditMode());
 
 		Text editText = new Text("Edit widgets");
+		editText.getStyleClass().add("text");
 		editFeatureButton.getChildren().add(editText);
 
 		widgetVBox.getChildren().add(editFeatureButton);
@@ -396,6 +401,7 @@ public class LocationView {
 		editFeatureButton.setOnMouseClicked(e -> exitEditMode());
 		editFeatureButton.getChildren().clear();
 		Text editText = new Text("Confirm");
+		editText.getStyleClass().add("text");
 		editFeatureButton.getChildren().add(editText);
 	}
 
@@ -405,6 +411,7 @@ public class LocationView {
 		editFeatureButton.setOnMouseClicked(e -> enterEditMode());
 		editFeatureButton.getChildren().clear();
 		Text editText = new Text("Edit widgets");
+		editText.getStyleClass().add("text");
 		editFeatureButton.getChildren().add(editText);
 
 		saveEditListToLocation();
