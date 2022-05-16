@@ -7,6 +7,7 @@ import com.sothawo.mapjfx.Coordinate;
 import com.sothawo.mapjfx.MapType;
 
 import javafx.beans.binding.Bindings;
+import javafx.css.PseudoClass;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -443,10 +444,10 @@ public class LocationView {
 		// Reset all the buttons, the update the selected one
 		for (int i = 0; i < 7; i++) {
 			StackPane dayButton = (StackPane) daysHBox.getChildren().get(i);
-			dayButton.setBackground(new Background(new BackgroundFill(Color.LIGHTSKYBLUE, null, null)));
+			dayButton.pseudoClassStateChanged(PseudoClass.getPseudoClass("active"),false);
 		}
 		StackPane selectedDayButton = (StackPane) daysHBox.getChildren().get(day);
-		selectedDayButton.setBackground(new Background(new BackgroundFill(Color.CYAN, null, null)));
+		selectedDayButton.pseudoClassStateChanged(PseudoClass.getPseudoClass("active"),true);
 	}
 
 	// private void updateLocationFeatures() {

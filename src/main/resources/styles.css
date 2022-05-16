@@ -44,9 +44,12 @@
 }
 
 .day-button {
-	
+	-fx-background-color: -fx-day-button-color;
 	-fx-border-color: -fx-button-color;
 	-fx-border-width: 1px;
+}
+.day-button:active {
+	-fx-background-color: -fx-symbol-color;
 }
 
 .menu-button {

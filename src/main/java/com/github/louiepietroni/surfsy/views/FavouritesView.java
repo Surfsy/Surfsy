@@ -61,7 +61,6 @@ public class FavouritesView {
         favouritesVBox.setMinSize(350, Math.max(125*favourites.size()+100,630));
         favouritesScrollPane.setMinSize(350,630);
         BigBox.setMinSize(350,700);
-        BigBox.setBackground(new Background(new BackgroundFill(Color.LIGHTSLATEGREY,null,null)));
 
 
     }
