@@ -53,18 +53,14 @@ public class FavouritesView {
         favouritesScrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         favouritesScrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         favouritesScrollPane.setBorder(Border.EMPTY);
-        favouritesScrollPane.setStyle("-fx-padding: 0");
 
 
 //        Setup the favourites vBox
         favouritesVBox.setSpacing(5);
-        favouritesVBox.setMinSize(350, Math.max(125*favourites.size()+100,630));
-        favouritesVBox.setBorder(Border.EMPTY);
+        favouritesVBox.setMinSize(350, 700);
         favouritesScrollPane.setMinSize(350,630);
         BigBox.setMinSize(350,700);
         BigBox.setBackground(new Background(new BackgroundFill(Color.LIGHTSLATEGREY,null,null)));
-
-        plusBox.setStyle("-fx-padding: 0");
 
 
     }
@@ -118,12 +114,13 @@ public class FavouritesView {
     }
 
     private void addFavouritesAddition(){
+        HBox box = new HBox();
+        //box.rotateProperty();
         StackPane plus = new StackPane();
         plus.setMinSize(60,60);
 
-        StackPane buff = new StackPane();
-        buff.setMinSize(290,60);
-        //buff.setFill(Color.LIGHTSLATEGREY);
+        Rectangle buff = new Rectangle(280,60);
+        buff.setFill(Color.LIGHTSLATEGREY);
 
         JFXButton plusButton = new JFXButton("+");
         plusButton.setButtonType(JFXButton.ButtonType.RAISED);
@@ -132,7 +129,7 @@ public class FavouritesView {
 
         JFXButton suggestedSearch = new JFXButton("R");
         suggestedSearch.setButtonType(JFXButton.ButtonType.RAISED);
-        suggestedSearch.setStyle("-fx-background-radius: 30;-fx-background-color: #D0D0D0");
+        suggestedSearch.setStyle("-fx-background-radius: 90;-fx-background-color: #D0D0D0");
         suggestedSearch.setPrefSize(35,35);
         suggestedSearch.setOnAction(e -> Surfsy.getViewManager().setSceneToAddSuggestedView());
 
@@ -154,6 +151,7 @@ public class FavouritesView {
 
         plusBox.getChildren().add(buff);
         plusBox.getChildren().add(plus);
+        //plus.onMouseClickedProperty(foo());
 
     }
 }

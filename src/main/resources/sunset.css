@@ -1,9 +1,13 @@
 @import "styles.css";
 
 * {
-	-fx-main-bg-color: '#080606';
-	-fx-text-color: '#E16A26';
-	-fx-color1: '#684230';
-	-fx-color2: '#A32820';
+	-fx-main-bg-color: '#000000';
+	-fx-text-color: '#F3E1CD';
+	-fx-symbol-color: '#E16A26';
+	-fx-widget-bg-color: '#4C4A4A';
+	-fx-color3: '#89341C';
+	-fx-color3: '#005C8F';
+	-fx-color3: '#009BBF';
+	-fx-color3: '#959191';
 	-fx-color3: '#A32C22';
 }
