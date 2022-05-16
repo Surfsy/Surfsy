@@ -134,7 +134,7 @@ public class LocationView {
 
 			rootNode = graphPanel;
 			// TODO: integrate with theme
-			graphPanel.setStyle("-fx-background-color: #c6ccd8");
+			graphPanel.getStyleClass().add("border-pane");
 
 			// Place the widgets in the panel
 			graphPanel.setTop(text);
@@ -187,7 +187,7 @@ public class LocationView {
 			var mapHolder = new BorderPane();
 
 			// TODO: integrate with theme
-			mapHolder.setStyle("-fx-background-color: #c6ccd8");
+			mapHolder.getStyleClass().add("border-pane");
 			mapHolder.setMinSize(maxWidgetWidth, 240);
 			mapHolder.setMaxWidth(maxWidgetWidth);
 			mapHolder.setTop(mapText);
