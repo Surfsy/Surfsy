@@ -1,11 +1,23 @@
-.root{
+.root {
 	-fx-background: "lightslategray";
 }
 
-.text{
+.text {
 	-fx-fill: "black";
+	-fx-font-family: 'Segoe UI';
 }
 
-.border-pane{
+.border-pane {
 	-fx-background-color: "#c6ccd8";
+}
+
+
+.h1 {
+	-fx-fill: "black";
+	-fx-font-size: 40;
+}
+
+.p {
+	-fx-fill: "black";
+	-fx-font-size: 16;
 }

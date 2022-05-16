@@ -32,8 +32,6 @@ import java.util.Random;
 
 public class LocationView {
 
-	static final Font h1 = Font.font("Segoe UI", 40);
-	static final Font p = Font.font("Segoe UI", 16);
 	static final double maxWidgetWidth = 330;
 
 	abstract static class Widget {
@@ -61,7 +59,7 @@ public class LocationView {
 			super();
 			Text text = new Text(location.getName());
 			text.getStyleClass().add("text");
-			text.setFont(h1);
+			text.getStyleClass().add("h1");
 			text.setWrappingWidth(350);
 			text.setTextAlignment(TextAlignment.CENTER);
 			rootNode = text;
@@ -92,7 +90,7 @@ public class LocationView {
 			// Create the label text for this view
 			Text text = new Text(name);
 			text.getStyleClass().add("text");
-			text.setFont(p);
+			text.getStyleClass().add("p");
 
 			// defining the axes
 			final var xAxis = new NumberAxis(0, 23, 3);
@@ -133,7 +131,7 @@ public class LocationView {
 			graphPanel.setMaxWidth(maxWidgetWidth);
 
 			rootNode = graphPanel;
-			// TODO: integrate with theme
+			// integrate with theme
 			graphPanel.getStyleClass().add("border-pane");
 
 			// Place the widgets in the panel
