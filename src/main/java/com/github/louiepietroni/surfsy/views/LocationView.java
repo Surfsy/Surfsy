@@ -237,9 +237,6 @@ public class LocationView {
 		// Create widgets and fill them with data
 		generateWidgets();
 
-		// Create edit feature button
-		addEditFeatureButton();
-
 		// Create day buttons
 		addDayButtons();
 
@@ -267,6 +264,10 @@ public class LocationView {
 			widgetVBox.getChildren().add(widget.getNode());
 		}
 		updateWidgets();
+
+		// Create edit feature button
+		addEditFeatureButton();
+
 	}
 
 	private void configureViews() {
