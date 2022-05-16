@@ -86,8 +86,7 @@ public class FavouritesView {
         locationSummary.setMinSize(330, 120);
 
         Rectangle rect = new Rectangle(330, 120);
-        Random rand = new Random();
-        rect.setFill(Color.color(rand.nextDouble(), rand.nextDouble(), rand.nextDouble()));
+        rect.getStyleClass().add("widget-rectangle");
         locationSummary.getChildren().add(rect);
         Text text = new Text(location.getName());
         text.getStyleClass().add("text");
@@ -101,8 +100,7 @@ public class FavouritesView {
 //        Add the favourites title
 //        TODO: Style to favourites title
         Text text = new Text("Favourites");
-        text.getStyleClass().add("text");
-        text.setFont(Font.font ("Verdana", 40));
+        text.getStyleClass().add("h1");
         text.setWrappingWidth(350);
         text.setTextAlignment(TextAlignment.CENTER);
         addWidgetToFavouritesVBox(text);

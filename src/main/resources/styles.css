@@ -1,5 +1,8 @@
 .root {
 	-fx-background: -fx-main-bg-color;
+	-fx-light-text-color: -fx-text-color;
+    -fx-mid-text-color: -fx-text-color;
+    -fx-dark-text-color:  -fx-text-color;
 }
 
 .text {
@@ -25,4 +28,12 @@
 	-fx-fill: -fx-text-color;
 	-fx-font-size: 16;
 	-fx-font-family: 'Segoe UI';
+}
+
+.edit-button {
+	-fx-background-color: -fx-button-color;
+	-fx-background-radius: 10;
+	-fx-border-color: -fx-button-color;
+	-fx-border-radius: 10;
+	-fx-border-width: 2px;
 }

@@ -362,10 +362,8 @@ public class LocationView {
 	private void addEditFeatureButton() {
 		// Add the edit button which appears below the features and starts edit mode
 		editFeatureButton = new StackPane();
+		editFeatureButton.getStyleClass().add("edit-button");
 		editFeatureButton.setMaxSize(100, 40);
-		editFeatureButton.setBackground(new Background(new BackgroundFill(Color.DARKCYAN, new CornerRadii(10), null)));
-		editFeatureButton.setBorder(new Border(
-				new BorderStroke(Color.TEAL, BorderStrokeStyle.SOLID, new CornerRadii(10), BorderStroke.THIN)));
 		editFeatureButton.setOnMouseClicked(e -> enterEditMode());
 
 		Text editText = new Text("Edit widgets");
