@@ -53,14 +53,13 @@ public class FavouritesView {
         favouritesScrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         favouritesScrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         favouritesScrollPane.setBorder(Border.EMPTY);
+        favouritesScrollPane.setMinSize(350,630);
 
 
 //        Setup the favourites vBox
         favouritesVBox.setSpacing(5);
         favouritesVBox.setMinSize(350, 700);
-        favouritesScrollPane.setMinSize(350,630);
         BigBox.setMinSize(350,700);
-        BigBox.setBackground(new Background(new BackgroundFill(Color.LIGHTSLATEGREY,null,null)));
 
 
     }
@@ -86,8 +85,7 @@ public class FavouritesView {
         locationSummary.setMinSize(330, 120);
 
         Rectangle rect = new Rectangle(330, 120);
-        Random rand = new Random();
-        rect.setFill(Color.color(rand.nextDouble(), rand.nextDouble(), rand.nextDouble()));
+        rect.getStyleClass().add("widget-rectangle");
         locationSummary.getChildren().add(rect);
         Text text = new Text(location.getName());
         text.getStyleClass().add("text");
@@ -101,8 +99,7 @@ public class FavouritesView {
 //        Add the favourites title
 //        TODO: Style to favourites title
         Text text = new Text("Favourites");
-        text.getStyleClass().add("text");
-        text.setFont(Font.font ("Verdana", 40));
+        text.getStyleClass().add("h1");
         text.setWrappingWidth(350);
         text.setTextAlignment(TextAlignment.CENTER);
         addWidgetToFavouritesVBox(text);

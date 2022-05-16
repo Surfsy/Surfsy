@@ -8,9 +8,12 @@
 }
 
 .border-pane {
-	-fx-background-color: "#c6ccd8";
+	-fx-background-color: -fx-widget-bg-color;
 }
 
+.widget-rectangle {
+	-fx-fill: -fx-widget-bg-color;
+}
 
 .h1 {
 	-fx-fill: -fx-text-color;
