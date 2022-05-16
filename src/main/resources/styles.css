@@ -18,6 +18,11 @@
 	-fx-fill: -fx-widget-bg-color;
 }
 
+.plus-button {
+	-fx-background-color: -fx-button-color;
+}
+
+
 .h1 {
 	-fx-fill: -fx-text-color;
 	-fx-font-size: 40;

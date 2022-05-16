@@ -53,11 +53,12 @@ public class FavouritesView {
         favouritesScrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         favouritesScrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         favouritesScrollPane.setBorder(Border.EMPTY);
+        favouritesScrollPane.setStyle("-fx-padding: 0");
 
 
 //        Setup the favourites vBox
         favouritesVBox.setSpacing(5);
-        favouritesVBox.setMinSize(350, 700);
+        favouritesVBox.setMinSize(350, Math.max(125*favourites.size()+100,630));
         favouritesScrollPane.setMinSize(350,630);
         BigBox.setMinSize(350,700);
         BigBox.setBackground(new Background(new BackgroundFill(Color.LIGHTSLATEGREY,null,null)));
@@ -117,23 +118,26 @@ public class FavouritesView {
         StackPane plus = new StackPane();
         plus.setMinSize(60,60);
 
-        Rectangle buff = new Rectangle(280,60);
-        buff.setFill(Color.LIGHTSLATEGREY);
+        StackPane buff = new StackPane();
+        buff.setMinSize(290,60);
 
         JFXButton plusButton = new JFXButton("+");
         plusButton.setButtonType(JFXButton.ButtonType.RAISED);
-        plusButton.setStyle("-fx-background-radius: 30;-fx-background-color: #FFFFFF");
+        plusButton.setStyle("-fx-background-radius: 30");
+        plusButton.getStyleClass().addAll("plus-button");
         plusButton.setPrefSize(45,45);
 
         JFXButton suggestedSearch = new JFXButton("R");
         suggestedSearch.setButtonType(JFXButton.ButtonType.RAISED);
-        suggestedSearch.setStyle("-fx-background-radius: 90;-fx-background-color: #D0D0D0");
+        suggestedSearch.setStyle("-fx-background-radius: 90");
+        suggestedSearch.getStyleClass().addAll("plus-button");
         suggestedSearch.setPrefSize(35,35);
         suggestedSearch.setOnAction(e -> Surfsy.getViewManager().setSceneToAddSuggestedView());
 
         JFXButton mapSearch = new JFXButton("+");
         mapSearch.setButtonType(JFXButton.ButtonType.RAISED);
-        mapSearch.setStyle("-fx-background-radius: 30;-fx-background-color: #D0D0D0");
+        mapSearch.setStyle("-fx-background-radius: 30");
+        mapSearch.getStyleClass().addAll("plus-button");
         mapSearch.setPrefSize(35,35);
         mapSearch.setOnAction(e -> Surfsy.getViewManager().setSceneToAddMapView());
 
