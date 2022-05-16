@@ -331,8 +331,8 @@ public class LocationView {
 		// Creates a button for a day, which will update the displayed data
 		// TODO: Style this to be a button corresponding to i days from today
 		StackPane dayButton = new StackPane();
+		dayButton.getStyleClass().add("day-button");
 		dayButton.setMinSize(42, 42);
-		dayButton.setBorder(new Border(new BorderStroke(Color.TEAL, BorderStrokeStyle.SOLID, null, BorderStroke.THIN)));
 		dayButton.setOnMouseClicked(e -> updateDay(buttonDay));
 
 		Text dayName = new Text(Integer.toString(buttonDay));
@@ -347,9 +347,7 @@ public class LocationView {
 		// TODO: Style the menu button
 		StackPane menuButton = new StackPane();
 		menuButton.setMinSize(56, 42);
-		menuButton.setBackground(new Background(new BackgroundFill(Color.DARKCYAN, null, null)));
-		menuButton
-				.setBorder(new Border(new BorderStroke(Color.TEAL, BorderStrokeStyle.SOLID, null, BorderStroke.THIN)));
+		menuButton.getStyleClass().add("menu-button");
 		menuButton.setOnMouseClicked(e -> Surfsy.getViewManager().setSceneToFavouritesView());
 
 		Text menuText = new Text("=");
