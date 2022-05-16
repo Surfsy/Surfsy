@@ -1,9 +1,9 @@
 .root {
-	-fx-background: "lightslategray";
+	-fx-background: -fx-main-bg-color;
 }
 
 .text {
-	-fx-fill: "black";
+	-fx-fill: -fx-text-color;
 	-fx-font-family: 'Segoe UI';
 }
 
@@ -13,11 +13,13 @@
 
 
 .h1 {
-	-fx-fill: "black";
+	-fx-fill: -fx-text-color;
 	-fx-font-size: 40;
+	-fx-font-family: 'Segoe UI';
 }
 
 .p {
-	-fx-fill: "black";
+	-fx-fill: -fx-text-color;
 	-fx-font-size: 16;
+	-fx-font-family: 'Segoe UI';
 }

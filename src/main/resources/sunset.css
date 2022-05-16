@@ -1,0 +1,9 @@
+@import "styles.css";
+
+* {
+	-fx-main-bg-color: '#080606';
+	-fx-text-color: '#E16A26';
+	-fx-color1: '#684230';
+	-fx-color2: '#A32820';
+	-fx-color3: '#A32C22';
+}

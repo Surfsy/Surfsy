@@ -233,7 +233,7 @@ public class LocationView {
 	private final VBox editListVBox = new VBox();
 
 	public LocationView(Location location) {
-		scene.getStylesheets().add("styles.css");
+		scene.getStylesheets().add("sunset.css");
 		this.location = location;
 
 		// Create widgets and fill them with data

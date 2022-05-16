@@ -29,7 +29,7 @@ public class FavouritesView {
 
 
     public FavouritesView(List<Location> favourites) {
-        scene.getStylesheets().add("styles.css");
+        scene.getStylesheets().add("sunset.css");
         this.favourites = favourites;
 
 //        Configure the views of the scene
