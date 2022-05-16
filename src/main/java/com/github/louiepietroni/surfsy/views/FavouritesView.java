@@ -2,11 +2,15 @@ package com.github.louiepietroni.surfsy.views;
 
 import com.github.louiepietroni.surfsy.Location;
 import com.github.louiepietroni.surfsy.Surfsy;
+import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXNodesList;
+import javafx.geometry.NodeOrientation;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
@@ -54,7 +58,7 @@ public class FavouritesView {
 //        Setup the favourites vBox
         favouritesVBox.setSpacing(5);
         favouritesVBox.setMinSize(350, 700);
-        favouritesScrollPane.setMinSize(350,650);
+        favouritesScrollPane.setMinSize(350,630);
         BigBox.setMinSize(350,700);
         BigBox.setBackground(new Background(new BackgroundFill(Color.LIGHTSLATEGREY,null,null)));
 
@@ -111,20 +115,40 @@ public class FavouritesView {
 
     private void addFavouritesAddition(){
         HBox box = new HBox();
-        box.rotateProperty();
+        //box.rotateProperty();
         StackPane plus = new StackPane();
-        plus.setMinSize(20,20);
+        plus.setMinSize(60,60);
 
-        Rectangle rect = new Rectangle(40,40);
-        Random rand = new Random();
-        rect.setFill(Color.color(rand.nextDouble(),rand.nextDouble(),rand.nextDouble()));
-
-        Rectangle buff = new Rectangle(310,40);
+        Rectangle buff = new Rectangle(280,60);
         buff.setFill(Color.LIGHTSLATEGREY);
-        plus.getChildren().add(rect);
-        Text text = new Text("+");
-        text.getStyleClass().add("text");
-        plus.getChildren().add(text);
+
+        JFXButton plusButton = new JFXButton("+");
+        plusButton.setButtonType(JFXButton.ButtonType.RAISED);
+        plusButton.setStyle("-fx-background-radius: 30;-fx-background-color: #FFFFFF");
+        plusButton.setPrefSize(45,45);
+
+        JFXButton suggestedSearch = new JFXButton("R");
+        suggestedSearch.setButtonType(JFXButton.ButtonType.RAISED);
+        suggestedSearch.setStyle("-fx-background-radius: 90;-fx-background-color: #D0D0D0");
+        suggestedSearch.setPrefSize(35,35);
+        suggestedSearch.setOnAction(e -> Surfsy.getViewManager().setSceneToAddSuggestedView());
+
+        JFXButton mapSearch = new JFXButton("+");
+        mapSearch.setButtonType(JFXButton.ButtonType.RAISED);
+        mapSearch.setStyle("-fx-background-radius: 30;-fx-background-color: #D0D0D0");
+        mapSearch.setPrefSize(35,35);
+        mapSearch.setOnAction(e -> Surfsy.getViewManager().setSceneToAddMapView());
+
+        JFXNodesList nodesList = new JFXNodesList();
+        nodesList.setRotate(180);
+        nodesList.addAnimatedNode(plusButton);
+        nodesList.addAnimatedNode(suggestedSearch);
+        nodesList.addAnimatedNode(mapSearch);
+        nodesList.setSpacing(10d);
+
+
+        plus.getChildren().add(nodesList);
+
         plusBox.getChildren().add(buff);
         plusBox.getChildren().add(plus);
         //plus.onMouseClickedProperty(foo());

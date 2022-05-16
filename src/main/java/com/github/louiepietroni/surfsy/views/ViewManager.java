@@ -66,4 +66,12 @@ public class ViewManager {
 		// Get the favourites scene and show it
 		primaryStage.setScene(favouritesView.getScene());
 	}
+
+	public void setSceneToAddSuggestedView(){
+		//TODO: create scene
+	}
+
+	public void setSceneToAddMapView(){
+		//TODO: create scene
+	}
 }

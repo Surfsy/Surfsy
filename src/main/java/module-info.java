@@ -11,6 +11,7 @@ module com.github.louiepietroni.surfsy {
     requires java.net.http;
     requires org.json;
     requires com.sothawo.mapjfx;
+    requires com.jfoenix;
 
     opens com.github.louiepietroni.surfsy to javafx.fxml;
     exports com.github.louiepietroni.surfsy;
