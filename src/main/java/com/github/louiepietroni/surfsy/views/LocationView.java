@@ -2,23 +2,204 @@ package com.github.louiepietroni.surfsy.views;
 
 import com.github.louiepietroni.surfsy.Location;
 import com.github.louiepietroni.surfsy.Surfsy;
+import com.sothawo.mapjfx.Configuration;
+import com.sothawo.mapjfx.Coordinate;
+import com.sothawo.mapjfx.MapType;
+
+import javafx.beans.binding.Bindings;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.chart.LineChart;
+import javafx.scene.chart.NumberAxis;
+import javafx.scene.chart.XYChart;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
+import com.sothawo.mapjfx.MapView;
+import com.sothawo.mapjfx.Projection;
+import com.sothawo.mapjfx.offline.OfflineCache;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 public class LocationView {
+
+	static final Font h1 = Font.font("Segoe UI", 40);
+	static final Font p = Font.font("Segoe UI", 16);
+	static final double maxWidgetWidth = 330;
+
+	abstract static class Widget {
+		protected Node rootNode;
+
+		public Widget() {
+			rootNode = null;
+		}
+
+		public Node getNode() {
+			assert rootNode != null;
+
+			return rootNode;
+		}
+
+		public abstract void updateWidget();
+	}
+
+	/**
+	 * Header widget, should be placed at the top, page title will inherit it's name
+	 */
+	class TitleWidget extends Widget {
+
+		public TitleWidget() {
+			super();
+			Text text = new Text(location.getName());
+			text.setFont(h1);
+			text.setWrappingWidth(350);
+			text.setTextAlignment(TextAlignment.CENTER);
+			rootNode = text;
+		}
+
+		@Override
+		public void updateWidget() {
+			// TODO Auto-generated method stub
+
+		}
+	}
+
+	/**
+	 * Widget for graphs over 24 hours in a day
+	 */
+	class GraphWidget extends Widget {
+
+		private final String name;
+		private final XYChart.Series<Number, Number> series;
+
+		/**
+		 * Create the view for a feature, with its name and graph
+		 */
+		public GraphWidget(String name) {
+
+			super();
+
+			// Create the label text for this view
+			var text = new Text(name);
+			text.setFont(p);
+
+			// defining the axes
+			final var xAxis = new NumberAxis(0, 23, 3);
+			final var yAxis = new NumberAxis();
+
+			// creating the chart
+			final LineChart<Number, Number> lineChart = new LineChart<>(xAxis, yAxis);
+
+			// Make the background transparent, and remove the grid lines
+			lineChart.lookup(".chart-plot-background").setStyle("-fx-background-color: transparent");
+			lineChart.lookup(".chart-vertical-grid-lines ").setStyle("-fx-stroke: transparent");
+			lineChart.lookup(".chart-horizontal-grid-lines").setStyle("-fx-stroke: transparent");
+
+			lineChart.setCreateSymbols(false);
+			lineChart.setLegendVisible(false);
+
+			// defining a series
+			series = new XYChart.Series<>();
+			lineChart.getData().add(series);
+
+			this.name = name;
+			// Init to blank graph
+			for (int i = 0; i < 24; i++) {
+				series.getData().add(new XYChart.Data<>(i, 0));
+			}
+
+			// Remove the tick marks
+			xAxis.setTickMarkVisible(false);
+			xAxis.setMinorTickVisible(false);
+			yAxis.setTickMarkVisible(false);
+			yAxis.setMinorTickVisible(false);
+
+			lineChart.setPrefSize(maxWidgetWidth, 100);
+
+			// Create the panel that will hold all the widgets
+			var graphPanel = new BorderPane();
+			graphPanel.setMinSize(maxWidgetWidth, 120);
+			graphPanel.setMaxWidth(maxWidgetWidth);
+
+			rootNode = graphPanel;
+			// TODO: integrate with theme
+			graphPanel.setStyle("-fx-background-color: #c6ccd8");
+
+			// Place the widgets in the panel
+			graphPanel.setTop(text);
+			graphPanel.setCenter(lineChart);
+		}
+
+		@Override
+		public void updateWidget() {
+			var data = location.getData(name, day);
+
+			for (int i = 0; i < 24; i++) {
+				series.getData().get(i).YValueProperty().set(data.get(i));
+
+			}
+
+		}
+	}
+
+	class MapWidget extends Widget {
+		public MapWidget() {
+			super();
+			// Create the location map
+			// TODO: Create a map view of the location
+
+			var mapView = new MapView();
+
+			final OfflineCache offlineCache = mapView.getOfflineCache();
+			final String cacheDir = System.getProperty("java.io.tmpdir") + "/mapjfx-cache";
+			// watch the MapView's initialized property to finish initialization
+			mapView.initializedProperty().addListener((observable, oldValue, newValue) -> {
+				if (newValue) {
+					mapView.setCenter(new Coordinate(location.getLatitude(), location.getLongitude()));
+					mapView.setZoom(15);
+					mapView.setBingMapsApiKey("Ao6_AVBvLaiiXjCikwmox14Fp4m4yzayjvBJDUSq0-ZeXPhRCnj5ch1B1S0hQls2");
+					mapView.setMapType(MapType.BINGMAPS_AERIAL);
+				}
+			});
+
+			mapView.initialize(Configuration.builder()
+					.projection(Projection.WEB_MERCATOR)
+					.showZoomControls(false)
+					.build());
+
+			// create the text
+			var mapText = new Text();
+			mapText.textProperty().bind(Bindings.format("Map: %s", mapView.centerProperty()));
+
+			// Create the holder and populate it
+			var mapHolder = new BorderPane();
+
+			// TODO: integrate with theme
+			mapHolder.setStyle("-fx-background-color: #c6ccd8");
+			mapHolder.setMinSize(maxWidgetWidth, 240);
+			mapHolder.setMaxWidth(maxWidgetWidth);
+			mapHolder.setTop(mapText);
+			mapHolder.setCenter(mapView);
+
+			rootNode = mapHolder;
+		}
+
+		@Override
+		public void updateWidget() {
+			// TODO Auto-generated method stub
+
+		}
+	}
+
 	private final Location location;
 	// The widgetVBox holds all widgets, such as name, map and all weather graphs
 	private final VBox widgetVBox = new VBox();
@@ -41,27 +222,23 @@ public class LocationView {
 	// The button which will be pressed to change into edit mode
 	private StackPane editFeatureButton;
 
+	/**
+	 * Every widget currently on screen
+	 */
+	private List<Widget> activeWidgets;
+
 	// The Vbox which will contain all the toggles for showing features and will be
 	// shown when in edit mode
 	private final VBox editListVBox = new VBox();
 
 	public LocationView(Location location) {
-		scene.getStylesheets().add("styles.css");
 		this.location = location;
-		// Configure views such as widgetVBox and widgetScrollPane properties
-		configureViews();
 
-		// Create title view
-		addLocationTitle();
-
-		// Create map view
-		addLocationMap();
+		// Create widgets and fill them with data
+		generateWidgets();
 
 		// Create edit feature button
 		addEditFeatureButton();
-
-		// Create feature views
-		addLocationFeatures();
 
 		// Create day buttons
 		addDayButtons();
@@ -73,17 +250,39 @@ public class LocationView {
 		createEditListView();
 	}
 
+	/**
+	 * Create the widget V box and every widget in the active widget list
+	 */
+	private void generateWidgets() {
+		// Configure views such as widgetVBox and widgetScrollPane properties
+		configureViews();
+
+		// Init widget list with title, map, and all selected features in the location
+		activeWidgets = new ArrayList<Widget>(List.of(new TitleWidget(), new MapWidget()));
+		for (String feature : location.getWeatherFeatures()) {
+			activeWidgets.add(new GraphWidget(feature));
+		}
+
+		for (Widget widget : activeWidgets) {
+			widgetVBox.getChildren().add(widget.getNode());
+		}
+		updateWidgets();
+	}
+
 	private void configureViews() {
 		// Set up with widget scroll pane
 		widgetScrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
 		widgetScrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
 		widgetScrollPane.setBorder(Border.EMPTY);
 		widgetScrollPane.setMinSize(352, 658);
+		widgetScrollPane.setStyle("-fx-background: lightslategray;");
 
 		// Set up the widget vBox
 		widgetVBox.setSpacing(5);
 		widgetVBox.setAlignment(Pos.CENTER);
 		widgetVBox.setPadding(new Insets(0, 0, 5, 0));
+		widgetVBox.setBackground(new Background(new BackgroundFill(Color.LIGHTSLATEGREY, null, null)));
+		widgetVBox.getChildren().clear();
 
 		// Set up the edit list vBox
 		editListVBox.setPadding(new Insets(0, 0, 0, 50));
@@ -104,68 +303,19 @@ public class LocationView {
 		return scene;
 	}
 
-	/**
-	 * For each feature of this location, get its data for the current day and add
-	 * the feature
-	 */
-	private void addLocationFeatures() {
+	// /**
+	// * For each feature of this location, get its data for the current day and add
+	// * the feature
+	// */
+	// private void addLocationFeatures() {
 
-		for (String feature : location.getWeatherFeatures()) {
-			List<Double> data = location.getData(feature, day);
-			StackPane featureView = createFeatureView(feature, data);
-			widgetVBox.getChildren().add(widgetVBox.getChildren().size() - 1, featureView);
-		}
-	}
-
-	/** Create the view for a feature, with its name and graph */
-	private StackPane createFeatureView(String name, List<Double> data) {
-
-		// TODO: Have the name of the feature and a nice plot, which will need to be
-		// made with lines
-		StackPane dataView = new StackPane();
-		dataView.setMinSize(330, 120);
-		Rectangle rect = new Rectangle(330, 120);
-		rect.setFill(Color.color(data.get(0), data.get(1), data.get(2)));
-		dataView.getChildren().add(rect);
-
-		Text text = new Text(name);
-		text.getStyleClass().add("text");
-		dataView.getChildren().add(text);
-		Text dataText = new Text(Double.toString(data.get(0)));
-		StackPane.setAlignment(dataText, Pos.BOTTOM_CENTER);
-
-		dataView.getChildren().add(dataText);
-
-		return dataView;
-	}
-
-	private void addLocationMap() {
-		// Create the location map
-		// TODO: Create a map view of the location
-		StackPane mapView = new StackPane();
-		mapView.setMinSize(330, 240);
-		Rectangle rect = new Rectangle(330, 240);
-		Random rand = new Random();
-		rect.setFill(Color.color(rand.nextDouble(), rand.nextDouble(), rand.nextDouble()));
-		mapView.getChildren().add(rect);
-
-		Text mapText = new Text("Map");
-		mapText.getStyleClass().add("text");
-		mapView.getChildren().add(mapText);
-
-		widgetVBox.getChildren().add(mapView);
-	}
-
-	private void addLocationTitle() {
-		// Create and style the location title
-		// TODO: Style this title as desired
-		Text text = new Text(location.getName());
-		text.getStyleClass().add("text");
-		text.setFont(Font.font("Verdana", 40));
-		text.setWrappingWidth(350);
-		text.setTextAlignment(TextAlignment.CENTER);
-		widgetVBox.getChildren().add(text);
-	}
+	// for (String feature : location.getWeatherFeatures()) {
+	// List<Double> data = location.getData(feature, day);
+	// StackPane featureView = createFeatureView(feature, data);
+	// widgetVBox.getChildren().add(widgetVBox.getChildren().size() - 1,
+	// featureView);
+	// }
+	// }
 
 	private void addDayButtons() {
 		// Create a button for each day and add to the daysHBox
@@ -185,7 +335,6 @@ public class LocationView {
 		dayButton.setOnMouseClicked(e -> updateDay(buttonDay));
 
 		Text dayName = new Text(Integer.toString(buttonDay));
-		dayName.getStyleClass().add("text");
 		dayButton.getChildren().add(dayName);
 
 		return dayButton;
@@ -202,7 +351,6 @@ public class LocationView {
 		menuButton.setOnMouseClicked(e -> Surfsy.getViewManager().setSceneToFavouritesView());
 
 		Text menuText = new Text("=");
-		menuText.getStyleClass().add("text");
 		menuButton.getChildren().add(menuText);
 
 		daysHBox.getChildren().add(menuButton);
@@ -271,7 +419,14 @@ public class LocationView {
 			location.updateFeature(feature, selected);
 		}
 		location.saveLocation();
-		updateLocationFeatures();
+		// use this new location info to regenerate widgets
+		generateWidgets();
+	}
+
+	private void updateWidgets() {
+		for (Widget widget : activeWidgets) {
+			widget.updateWidget();
+		}
 	}
 
 	private void updateDay(int day) {
@@ -279,7 +434,7 @@ public class LocationView {
 		// updateLocationFeatures to redraw the updated features
 		this.day = day;
 		updateDayButtons(day);
-		updateLocationFeatures();
+		updateWidgets();
 	}
 
 	private void updateDayButtons(int day) {
@@ -292,10 +447,10 @@ public class LocationView {
 		selectedDayButton.setBackground(new Background(new BackgroundFill(Color.CYAN, null, null)));
 	}
 
-	private void updateLocationFeatures() {
-		// Remove the features and then call the function to create them, so they are
-		// all updated
-		widgetVBox.getChildren().remove(2, widgetVBox.getChildren().size() - 1);
-		addLocationFeatures();
-	}
+	// private void updateLocationFeatures() {
+	// // Remove the features and then call the function to create them, so they are
+	// // all updated
+	// widgetVBox.getChildren().remove(2, widgetVBox.getChildren().size() - 1);
+	// addLocationFeatures();
+	// }
 }

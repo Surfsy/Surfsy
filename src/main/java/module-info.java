@@ -10,6 +10,7 @@ module com.github.louiepietroni.surfsy {
 //    This was added due to the async get for the api
     requires java.net.http;
     requires org.json;
+    requires com.sothawo.mapjfx;
 
     opens com.github.louiepietroni.surfsy to javafx.fxml;
     exports com.github.louiepietroni.surfsy;
