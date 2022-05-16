@@ -57,3 +57,16 @@
 	-fx-border-color: -fx-button-color;
 	-fx-border-width: 1px;
 }
+
+.radio-button .radio {
+	-fx-background-color: -fx-widget-bg-color;
+    -fx-background-insets: 0;
+	-fx-border-width: 1px;
+	-fx-border-radius: 15px;
+    -fx-border-color: -fx-radio-button-dot-color;
+}
+
+.radio-button:selected .dot {
+	-fx-background-color: -fx-radio-button-dot-color;
+    -fx-background-insets: 0;
+}
