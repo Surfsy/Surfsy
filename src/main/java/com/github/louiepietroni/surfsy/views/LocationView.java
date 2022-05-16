@@ -168,7 +168,7 @@ public class LocationView {
 				if (newValue) {
 					mapView.setCenter(new Coordinate(location.getLatitude(), location.getLongitude()));
 					mapView.setZoom(15);
-					mapView.setBingMapsApiKey("Ao6_AVBvLaiiXjCikwmox14Fp4m4yzayjvBJDUSq0-ZeXPhRCnj5ch1B1S0hQls2");
+					// mapView.setBingMapsApiKey("Ao6_AVBvLaiiXjCikwmox14Fp4m4yzayjvBJDUSq0-ZeXPhRCnj5ch1B1S0hQls2");
 					mapView.setMapType(MapType.BINGMAPS_AERIAL);
 				}
 			});
