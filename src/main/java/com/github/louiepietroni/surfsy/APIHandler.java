@@ -92,8 +92,15 @@ public class APIHandler {
         return map;
     }
 
-    public static HashMap<String, List<Double>> fetchLocation(Double latitude, Double longitude) throws IOException, ParseException {
-        JSONObject jsonData = checkLocation(latitude, longitude);
+    public static HashMap<String, List<Double>> fetchLocation(Double latitude, Double longitude) {
+        JSONObject jsonData = null;
+        try {
+            jsonData = checkLocation(latitude, longitude);
+        } catch (IOException e) {
+            throw new RuntimeException("IOException in fetchLocation.");
+        } catch (ParseException e) {
+            throw new RuntimeException("ParseException in fetchLocation.");
+        }
         return jsonToHashMap(jsonData);
     }
 
@@ -133,7 +140,7 @@ public class APIHandler {
         }
     }
 
-    public static void main(String[] args) throws ParseException, IOException {
+    public static void main(String[] args) {
         HashMap<String, List<Double>> testMap = fetchLocation(50.2816397,-3.8950334);
         printHashMap(testMap);
         System.out.println();
