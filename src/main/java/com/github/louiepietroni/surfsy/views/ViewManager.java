@@ -1,11 +1,17 @@
 package com.github.louiepietroni.surfsy.views;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import com.github.louiepietroni.surfsy.Location;
+
 import javafx.stage.Stage;
 
-import java.util.*;
-
 public class ViewManager {
+
 	private final Stage primaryStage;
 	private List<Location> locations;
 
@@ -55,7 +61,7 @@ public class ViewManager {
 
 		Location thurlestoneBeach = new Location(50.25993, -3.86041, "Thurlestone Beach");
 		Location fistralBay = new Location(50.41747, -5.10384, "Fistral Bay");
-		Location stupid = new Location(50.2816397,-3.8950334,"Big Beach");
+		Location stupid = new Location(50.2816397, -3.8950334, "Big Beach");
 		locations = new ArrayList<>(Arrays.asList(thurlestoneBeach, fistralBay, stupid));
 	}
 
@@ -88,11 +94,11 @@ public class ViewManager {
 		primaryStage.setScene(favouritesView.getScene());
 	}
 
-	public void setSceneToAddSuggestedView(){
-		//TODO: create scene
+	public void setSceneToAddSuggestedView() {
+		// TODO: create scene
 	}
 
-	public void setSceneToAddMapView(){
-		//TODO: create scene
+	public void setSceneToAddMapView() {
+		// TODO: create scene
 	}
 }
