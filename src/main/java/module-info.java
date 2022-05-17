@@ -2,6 +2,8 @@ module com.github.louiepietroni.surfsy {
 	requires javafx.controls;
 	requires javafx.fxml;
 	requires javafx.web;
+	requires java.desktop;
+	requires org.girod.javafx.svgimage;
 
 	requires org.controlsfx.controls;
 	requires com.dlsc.formsfx;

@@ -14,8 +14,22 @@
         <junit.version>5.8.2</junit.version>
         <mapjfx.version>3.1.0</mapjfx.version>
     </properties>
+<repositories>
+	<repository>
+		<id>jitpack.io</id>
+		<url>https://jitpack.io</url>
+	  </repository>
+</repositories>
 
     <dependencies>
+
+		<dependency>
+			<groupId>com.github.hervegirod</groupId>
+			<artifactId>fxsvgimage</artifactId>
+			<version>1.0b2</version>
+		  </dependency>
+
+
         <!--        Mapping tool-->
         <dependency>
             <groupId>com.sothawo</groupId>
@@ -93,11 +107,7 @@
             <artifactId>jfoenix</artifactId>
             <version>9.0.10</version>
         </dependency>
-		<dependency>
-			<groupId>com.github.afester.javafx</groupId>
-			<artifactId>FranzXaverLibrary</artifactId>
-			<version>4.0</version>
-		</dependency>
+	
     </dependencies>
 
     <build>
