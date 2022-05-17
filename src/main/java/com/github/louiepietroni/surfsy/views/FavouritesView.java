@@ -125,6 +125,9 @@ public class FavouritesView {
         themeButton.setPrefSize(35,35);
         themeButton.setOnAction(e -> changeThemeToSunrise());
         titlePane.setRight(themeButton);
+        HBox leftBuffer = new HBox();
+        leftBuffer.setPrefSize(35,35);
+        titlePane.setLeft(leftBuffer);
     }
 
     private void changeThemeToSunrise() {
