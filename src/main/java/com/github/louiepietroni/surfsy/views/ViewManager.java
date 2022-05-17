@@ -29,7 +29,6 @@ public class ViewManager {
 	}
 
 	private void loadLocations() {
-		// TODO: create a location for each saved location by calling
 		// Location.loadFavourites(), passing in a file or something and save all these
 		// to locations as a list
 
