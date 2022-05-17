@@ -28,6 +28,14 @@ public class ViewManager {
 		primaryStage.show();
 	}
 
+	protected FavouritesView getFavouritesView() {
+		return favouritesView;
+	}
+
+	protected Map<Location, LocationView> getLocationViews() {
+		return locationViews;
+	}
+
 	private void loadLocations() {
 		// TODO: create a location for each saved location by calling
 		// Location.loadFavourites(), passing in a file or something and save all these

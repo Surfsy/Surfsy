@@ -17,6 +17,7 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 public class FavouritesView {
@@ -31,6 +32,10 @@ public class FavouritesView {
 //    The scene holds the whole view which is inside the scroll pane
     private final Scene scene = new Scene(BigBox, 350, 700);
 
+    private BorderPane titlePane;
+
+    private JFXButton themeButton;
+
 
     public FavouritesView(List<Location> favourites) {
         scene.getStylesheets().add("sunset.css");
@@ -41,6 +46,9 @@ public class FavouritesView {
 
 //        Create title view
         addFavouritesTitle();
+
+//        Create button for changing themes
+        addThemeButton();
 
 //        Create location summaries
         addFavouritesSummaries();
@@ -100,11 +108,46 @@ public class FavouritesView {
     private void addFavouritesTitle() {
 //        Add the favourites title
 //        TODO: Style to favourites title
+        titlePane = new BorderPane();
         Text text = new Text("Favourites");
         text.getStyleClass().add("h1");
-        text.setWrappingWidth(350);
+        text.setWrappingWidth(200);
         text.setTextAlignment(TextAlignment.CENTER);
-        addWidgetToFavouritesVBox(text);
+        titlePane.setCenter(text);
+        addWidgetToFavouritesVBox(titlePane);
+    }
+
+    private void addThemeButton() {
+        themeButton = new JFXButton();
+        themeButton.setStyle("-fx-background-radius: 30");
+        themeButton.getStyleClass().addAll("plus-button");
+        themeButton.setPrefSize(35,35);
+        themeButton.setOnAction(e -> changeThemeToSunrise());
+        titlePane.setRight(themeButton);
+    }
+
+    private void changeThemeToSunrise() {
+        themeButton.setOnAction(e -> changeThemeToSunset());
+        Scene scene = Surfsy.getViewManager().getFavouritesView().getScene();
+        scene.getStylesheets().clear();
+        scene.getStylesheets().add("sunrise.css");
+        for (LocationView lview : Surfsy.getViewManager().getLocationViews().values()){
+            scene = lview.getScene();
+            scene.getStylesheets().clear();
+            scene.getStylesheets().add("sunrise.css");
+        }
+    }
+
+    private void changeThemeToSunset() {
+        themeButton.setOnAction(e -> changeThemeToSunrise());
+        Scene scene = Surfsy.getViewManager().getFavouritesView().getScene();
+        scene.getStylesheets().clear();
+        scene.getStylesheets().add("sunset.css");
+        for (LocationView lview : Surfsy.getViewManager().getLocationViews().values()){
+            scene = lview.getScene();
+            scene.getStylesheets().clear();
+            scene.getStylesheets().add("sunset.css");
+        }
     }
 
     private void addWidgetToFavouritesVBox(Node widget) {
