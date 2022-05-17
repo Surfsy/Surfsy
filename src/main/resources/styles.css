@@ -38,13 +38,11 @@
 .edit-button {
 	-fx-background-color: -fx-button-color;
 	-fx-background-radius: 10;
-	-fx-border-color: -fx-button-color;
-	-fx-border-radius: 10;
-	-fx-border-width: 2px;
 }
 
 .day-button {
 	-fx-background-color: -fx-day-button-color;
+	-fx-background-radius: 0px;
 	-fx-border-color: -fx-button-color;
 	-fx-border-width: 1px;
 }
@@ -54,6 +52,7 @@
 
 .menu-button {
 	-fx-background-color: -fx-button-color;
+	-fx-background-radius: 0px;
 	-fx-border-color: -fx-button-color;
 	-fx-border-width: 1px;
 }

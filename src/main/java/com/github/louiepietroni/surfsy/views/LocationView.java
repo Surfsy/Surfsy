@@ -2,6 +2,7 @@ package com.github.louiepietroni.surfsy.views;
 
 import com.github.louiepietroni.surfsy.Location;
 import com.github.louiepietroni.surfsy.Surfsy;
+import com.jfoenix.controls.JFXButton;
 import com.sothawo.mapjfx.Configuration;
 import com.sothawo.mapjfx.Coordinate;
 import com.sothawo.mapjfx.MapType;
@@ -222,7 +223,7 @@ public class LocationView {
 	private int day = 0;
 
 	// The button which will be pressed to change into edit mode
-	private StackPane editFeatureButton;
+	private JFXButton editFeatureButton;
 
 	/**
 	 * Every widget currently on screen
@@ -322,23 +323,23 @@ public class LocationView {
 	private void addDayButtons() {
 		// Create a button for each day and add to the daysHBox
 		for (int i = 0; i < 7; i++) {
-			StackPane dayButton = createDayButton(i);
+			JFXButton dayButton = createDayButton(i);
 			daysHBox.getChildren().add(dayButton);
 		}
 		updateDayButtons(0);
 	}
 
-	private StackPane createDayButton(int buttonDay) {
+	private JFXButton createDayButton(int buttonDay) {
 		// Creates a button for a day, which will update the displayed data
 		// TODO: Style this to be a button corresponding to i days from today
-		StackPane dayButton = new StackPane();
+		JFXButton dayButton = new JFXButton();
+		dayButton.setButtonType(JFXButton.ButtonType.RAISED);
 		dayButton.getStyleClass().add("day-button");
 		dayButton.setMinSize(42, 42);
-		dayButton.setOnMouseClicked(e -> updateDay(buttonDay));
+		dayButton.setMaxSize(42, 42);
+		dayButton.setOnAction(e -> updateDay(buttonDay));
 
-		Text dayName = new Text(Integer.toString(buttonDay));
-		dayName.getStyleClass().add("text");
-		dayButton.getChildren().add(dayName);
+		dayButton.setText(Integer.toString(buttonDay));
 
 		return dayButton;
 	}
@@ -360,14 +361,12 @@ public class LocationView {
 
 	private void addEditFeatureButton() {
 		// Add the edit button which appears below the features and starts edit mode
-		editFeatureButton = new StackPane();
+		editFeatureButton = new JFXButton();
+		editFeatureButton.setButtonType(JFXButton.ButtonType.RAISED);
 		editFeatureButton.getStyleClass().add("edit-button");
-		editFeatureButton.setMaxSize(100, 40);
-		editFeatureButton.setOnMouseClicked(e -> enterEditMode());
-
-		Text editText = new Text("Edit widgets");
-		editText.getStyleClass().add("text");
-		editFeatureButton.getChildren().add(editText);
+		editFeatureButton.setMaxSize(100, 24);
+		editFeatureButton.setOnAction(e -> enterEditMode());
+		editFeatureButton.setText("Edit widgets");
 
 		widgetVBox.getChildren().add(editFeatureButton);
 	}
@@ -393,21 +392,15 @@ public class LocationView {
 	private void enterEditMode() {
 		// Called by the edit button, shows the editVBox which includes all the toggles
 		scrollVBox.getChildren().add(editListVBox);
-		editFeatureButton.setOnMouseClicked(e -> exitEditMode());
-		editFeatureButton.getChildren().clear();
-		Text editText = new Text("Confirm");
-		editText.getStyleClass().add("text");
-		editFeatureButton.getChildren().add(editText);
+		editFeatureButton.setOnAction(e -> exitEditMode());
+		editFeatureButton.setText("Confirm");
 	}
 
 	private void exitEditMode() {
 		// Called by the edit button when in edit mode to exit edit mode
 		scrollVBox.getChildren().remove(editListVBox);
-		editFeatureButton.setOnMouseClicked(e -> enterEditMode());
-		editFeatureButton.getChildren().clear();
-		Text editText = new Text("Edit widgets");
-		editText.getStyleClass().add("text");
-		editFeatureButton.getChildren().add(editText);
+		editFeatureButton.setOnAction(e -> enterEditMode());
+		editFeatureButton.setText("Edit widgets");
 
 		saveEditListToLocation();
 	}
@@ -443,10 +436,10 @@ public class LocationView {
 	private void updateDayButtons(int day) {
 		// Reset all the buttons, the update the selected one
 		for (int i = 0; i < 7; i++) {
-			StackPane dayButton = (StackPane) daysHBox.getChildren().get(i);
+			JFXButton dayButton = (JFXButton) daysHBox.getChildren().get(i);
 			dayButton.pseudoClassStateChanged(PseudoClass.getPseudoClass("active"),false);
 		}
-		StackPane selectedDayButton = (StackPane) daysHBox.getChildren().get(day);
+		JFXButton selectedDayButton = (JFXButton) daysHBox.getChildren().get(day);
 		selectedDayButton.pseudoClassStateChanged(PseudoClass.getPseudoClass("active"),true);
 	}
 
