@@ -12,11 +12,8 @@ public class Location {
 	private final double longitude;
 	private String name;
 
-	// The data string returned from the API
-	private String rawData;
-
 	// Map from name of a weather feature, to its data
-	private final Map<String, List<Double>> weatherData = new HashMap<>();
+	private final Map<String, List<Double>> weatherData;
 	// List of weather features which will be shown for this location
 	private final List<String> weatherFeatures;
 
@@ -27,69 +24,22 @@ public class Location {
 		this.name = name;
 		this.weatherFeatures = new ArrayList<>(
 				Arrays.asList("Wind Speed", "Wave Height", "Water Temperature", "Wind Direction"));
+		this.weatherData = APIHandler.fetchLocation(latitude, longitude);
 	}
 
-	public Location(double latitude, double longitude, String name, String rawData, List<String> weatherFeatures) {
+	public Location(double latitude, double longitude, String name, List<String> weatherFeatures) {
 		// Create a new location when all the data already exists, this will be when
 		// loading from a file
 		this.latitude = latitude;
 		this.longitude = longitude;
 		this.name = name;
-		this.rawData = rawData;
 		this.weatherFeatures = weatherFeatures;
-	}
-
-	private void pullDataFromAPI() {
-		// Set the raw data by making a call to the API, which should request all
-		// features from allPossibeWeatherFeatures
-		// TODO: Make a call and save the string returned from the API to rawData;
-		rawData = "This should be the string from the API";
-	}
-
-	private void parseRawData() {
-		// Parse the raw data for each weather feature of this location
-		for (String feature : weatherFeatures) {
-			parseFeature(feature);
-		}
-	}
-
-	public void updateData() {
-		// This will update the data by making an API request, then parsing each weather
-		// feature
-		pullDataFromAPI();
-		parseRawData();
-	}
-
-	private void loadDataIfNeeded() {
-		// If there is no raw data, update the data which will make an API call and
-		// parse it
-		if (rawData == null) {
-			updateData();
-		}
-		// If there is raw data but it hasn't been parsed, then parse it
-		else if (weatherData.isEmpty()) {
-			parseRawData();
-		}
+		this.weatherData = APIHandler.fetchLocation(latitude, longitude);
 	}
 
 	public List<Double> getData(String feature, int day) {
-		// Check if the data has already been loaded, if not then load it
-		loadDataIfNeeded();
 		// Return the weather data for the 24 hours corresponding to the day specified
-		return weatherData.get(feature).subList(24 * day, 24 * (day + 1));
-	}
-
-	private void parseFeature(String feature) {
-		// Parse raw data to get out the data corresponding to the passes in feature
-		// TODO: Parse the string in rawData for the feature passed in and save in the
-		// weatherData map from string to list of double. Will likely want to convert to
-		// API string
-		List<Double> data = new ArrayList<>();
-		Random rand = new Random();
-		for (int i = 0; i < 168; i++) {
-			data.add(rand.nextDouble());
-		}
-		weatherData.put(feature, data);
+		return weatherData.get(convertFeatureNameForAPI(feature)).subList(24 * day, 24 * (day + 1));
 	}
 
 	/** List of weather features we have selected */
@@ -107,7 +57,6 @@ public class Location {
 		// Add a feature to this locations weather features
 		if (!weatherFeatures.contains(feature)) {
 			weatherFeatures.add(feature);
-			parseFeature(feature);
 		}
 	}
 
@@ -154,7 +103,7 @@ public class Location {
 
 	public static List<String> getAllWeatherFeaturesForAPI() {
 		// Get list of all features in the format needed for the API
-		List<String> allWeatherFeaturesForAPI = new ArrayList<String>();
+		List<String> allWeatherFeaturesForAPI = new ArrayList<>();
 		for (String feature : allWeatherFeatures) {
 			allWeatherFeaturesForAPI.add(convertFeatureNameForAPI(feature));
 		}
