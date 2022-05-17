@@ -181,7 +181,7 @@ public class Location {
 		//"src/main/java/com/github/louiepietroni/surfsy/locations.json"
 		JSONParser parser = new JSONParser();
 		ArrayList<Location> locations = new ArrayList<>();
-		try(FileReader r = new FileReader("src/main/java/com/github/louiepietroni/surfsy/locations.json")) {
+		try(FileReader r = new FileReader("src/main/resources/locations.json")) {
 			Object ob = parser.parse(r);
 			JSONArray ja = (JSONArray) ob;
 			for (Object o : ja) {
