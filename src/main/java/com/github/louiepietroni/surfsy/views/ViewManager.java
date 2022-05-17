@@ -10,6 +10,16 @@ import com.github.louiepietroni.surfsy.Location;
 
 import javafx.stage.Stage;
 
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.*;
+
 public class ViewManager {
 
 	private final Stage primaryStage;
@@ -55,14 +65,20 @@ public class ViewManager {
 	}
 
 	private void loadLocations() {
-		// TODO: create a location for each saved location by calling
+
+
 		// Location.loadFavourites(), passing in a file or something and save all these
 		// to locations as a list
+		//Parsing from locations.json
 
-		Location thurlestoneBeach = new Location(50.25993, -3.86041, "Thurlestone Beach");
-		Location fistralBay = new Location(50.41747, -5.10384, "Fistral Bay");
-		Location stupid = new Location(50.2816397, -3.8950334, "Big Beach");
-		locations = new ArrayList<>(Arrays.asList(thurlestoneBeach, fistralBay, stupid));
+		try {
+			locations = Location.loadFromFile();
+		} catch (IOException e) {
+			throw new RuntimeException("Reader Exception, location handler",e);
+		} catch (ParseException e) {
+			throw new RuntimeException("Parse Exception, location handler",e);
+		}
+
 	}
 
 	private void createLocationView(Location location) {
