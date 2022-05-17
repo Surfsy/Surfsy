@@ -123,15 +123,19 @@ public class FavouritesView {
 	}
 
 	private void addThemeButton() {
-
+		BorderPane themeButtonBox = new BorderPane();
 		themeButton = new JFXButton();
-		themeButton.setStyle("-fx-background-radius: 30");
 		themeButton.getStyleClass().add("theme-button");
-		themeButton.setPrefSize(35, 35);
+		themeButton.setPrefSize(45, 45);
 		themeButton.setOnAction(e -> changeThemeToSunrise());
-		titlePane.setRight(themeButton);
+
+		themeButtonBox.setCenter(themeButton);
+		HBox themeButtonRightBuffer = new HBox();
+		themeButtonRightBuffer.setPrefSize(5, 45);
+		themeButtonBox.setRight(themeButtonRightBuffer);
+		titlePane.setRight(themeButtonBox);
 		HBox leftBuffer = new HBox();
-		leftBuffer.setPrefSize(35, 35);
+		leftBuffer.setPrefSize(50, 45);
 		titlePane.setLeft(leftBuffer);
 		if (Objects.equals(Surfsy.getViewManager().getDefaultTheme(), "sunrise.css")){
 			themeButton.pseudoClassStateChanged(PseudoClass.getPseudoClass("light"), true);
