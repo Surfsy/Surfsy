@@ -236,7 +236,7 @@ public class LocationView {
 
 	public LocationView(Location location) {
 		scene.getStylesheets().clear();
-		scene.getStylesheets().add("sunset.css");
+		scene.getStylesheets().add(Surfsy.getViewManager().getDefaultTheme());
 		this.location = location;
 
 		// Create widgets and fill them with data

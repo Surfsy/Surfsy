@@ -38,7 +38,8 @@ public class FavouritesView {
 
 
     public FavouritesView(List<Location> favourites) {
-        scene.getStylesheets().add("sunset.css");
+        scene.getStylesheets().clear();
+        scene.getStylesheets().add(Surfsy.getViewManager().getDefaultTheme());
         this.favourites = favourites;
 
 //        Configure the views of the scene
@@ -127,6 +128,7 @@ public class FavouritesView {
     }
 
     private void changeThemeToSunrise() {
+        Surfsy.getViewManager().setDefaultTheme("sunrise.css");
         themeButton.setOnAction(e -> changeThemeToSunset());
         Scene scene = Surfsy.getViewManager().getFavouritesView().getScene();
         scene.getStylesheets().clear();
@@ -139,6 +141,7 @@ public class FavouritesView {
     }
 
     private void changeThemeToSunset() {
+        Surfsy.getViewManager().setDefaultTheme("sunset.css");
         themeButton.setOnAction(e -> changeThemeToSunrise());
         Scene scene = Surfsy.getViewManager().getFavouritesView().getScene();
         scene.getStylesheets().clear();
