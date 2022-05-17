@@ -5,6 +5,7 @@ import com.github.louiepietroni.surfsy.Surfsy;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXNodesList;
 
+import javafx.css.PseudoClass;
 import org.girod.javafx.svgimage.SVGImage;
 import org.girod.javafx.svgimage.SVGLoader;
 
@@ -23,6 +24,7 @@ import javafx.scene.text.TextAlignment;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Random;
 
 public class FavouritesView {
@@ -121,19 +123,19 @@ public class FavouritesView {
 	}
 
 	private void addThemeButton() {
-		// Load the image
-		SVGImage img = SVGLoader.load("meteocons-icons/6.svg");
 
 		themeButton = new JFXButton();
 		themeButton.setStyle("-fx-background-radius: 30");
-		themeButton.getStyleClass().addAll("plus-button");
+		themeButton.getStyleClass().add("theme-button");
 		themeButton.setPrefSize(35, 35);
 		themeButton.setOnAction(e -> changeThemeToSunrise());
-		themeButton.setGraphic(img);
 		titlePane.setRight(themeButton);
 		HBox leftBuffer = new HBox();
 		leftBuffer.setPrefSize(35, 35);
 		titlePane.setLeft(leftBuffer);
+		if (Objects.equals(Surfsy.getViewManager().getDefaultTheme(), "sunrise.css")){
+			themeButton.pseudoClassStateChanged(PseudoClass.getPseudoClass("light"), true);
+		}
 	}
 
 	private void changeThemeToSunrise() {
@@ -147,6 +149,7 @@ public class FavouritesView {
 			scene.getStylesheets().clear();
 			scene.getStylesheets().add("sunrise.css");
 		}
+		themeButton.pseudoClassStateChanged(PseudoClass.getPseudoClass("light"), true);
 	}
 
 	private void changeThemeToSunset() {
@@ -160,6 +163,7 @@ public class FavouritesView {
 			scene.getStylesheets().clear();
 			scene.getStylesheets().add("sunset.css");
 		}
+		themeButton.pseudoClassStateChanged(PseudoClass.getPseudoClass("light"), false);
 	}
 
 	private void addWidgetToFavouritesVBox(Node widget) {
@@ -179,20 +183,20 @@ public class FavouritesView {
 		JFXButton plusButton = new JFXButton("+");
 		plusButton.setButtonType(JFXButton.ButtonType.RAISED);
 		plusButton.setStyle("-fx-background-radius: 30");
-		plusButton.getStyleClass().addAll("plus-button");
+		plusButton.getStyleClass().add("plus-button");
 		plusButton.setPrefSize(45, 45);
 
 		JFXButton suggestedSearch = new JFXButton("R");
 		suggestedSearch.setButtonType(JFXButton.ButtonType.RAISED);
 		suggestedSearch.setStyle("-fx-background-radius: 90");
-		suggestedSearch.getStyleClass().addAll("plus-button");
+		suggestedSearch.getStyleClass().add("plus-button");
 		suggestedSearch.setPrefSize(35, 35);
 		suggestedSearch.setOnAction(e -> Surfsy.getViewManager().setSceneToAddSuggestedView());
 
 		JFXButton mapSearch = new JFXButton("+");
 		mapSearch.setButtonType(JFXButton.ButtonType.RAISED);
 		mapSearch.setStyle("-fx-background-radius: 30");
-		mapSearch.getStyleClass().addAll("plus-button");
+		mapSearch.getStyleClass().add("plus-button");
 		mapSearch.setPrefSize(35, 35);
 		mapSearch.setOnAction(e -> Surfsy.getViewManager().setSceneToAddMapView());
 
