@@ -35,7 +35,8 @@ public class ViewManager {
 
 		Location thurlestoneBeach = new Location(50.25993, -3.86041, "Thurlestone Beach");
 		Location fistralBay = new Location(50.41747, -5.10384, "Fistral Bay");
-		locations = new ArrayList<>(Arrays.asList(thurlestoneBeach, fistralBay));
+		Location stupid = new Location(50.2816397,-3.8950334,"Big Beach");
+		locations = new ArrayList<>(Arrays.asList(thurlestoneBeach, fistralBay, stupid));
 	}
 
 	private void createLocationView(Location location) {
