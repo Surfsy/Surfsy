@@ -93,6 +93,11 @@
             <artifactId>jfoenix</artifactId>
             <version>9.0.10</version>
         </dependency>
+		<dependency>
+			<groupId>com.github.afester.javafx</groupId>
+			<artifactId>FranzXaverLibrary</artifactId>
+			<version>4.0</version>
+		</dependency>
     </dependencies>
 
     <build>
@@ -102,8 +107,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.9.0</version>
                 <configuration>
-                    <source>16</source>
-                    <target>16</target>
+                    <source>17</source>
+                    <target>17</target>
                 </configuration>
             </plugin>
             <plugin>
