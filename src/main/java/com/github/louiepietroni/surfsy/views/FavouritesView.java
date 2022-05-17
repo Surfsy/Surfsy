@@ -53,13 +53,14 @@ public class FavouritesView {
         favouritesScrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         favouritesScrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         favouritesScrollPane.setBorder(Border.EMPTY);
+        favouritesScrollPane.setMinSize(350,630);
         favouritesScrollPane.setStyle("-fx-padding: 0");
 
 
 //        Setup the favourites vBox
         favouritesVBox.setSpacing(5);
         favouritesVBox.setMinSize(350, Math.max(125*favourites.size()+100,630));
-        favouritesScrollPane.setMinSize(350,630);
+
         BigBox.setMinSize(350,700);
 
 
