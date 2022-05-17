@@ -257,7 +257,8 @@ public class LocationView {
 	private final VBox editListVBox = new VBox();
 
 	public LocationView(Location location) {
-		scene.getStylesheets().add("sunrise.css");
+		scene.getStylesheets().clear();
+		scene.getStylesheets().add(Surfsy.getViewManager().getDefaultTheme());
 		this.location = location;
 
 		// Create widgets and fill them with data

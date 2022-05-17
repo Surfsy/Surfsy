@@ -18,12 +18,16 @@ public class ViewManager {
 	private FavouritesView favouritesView;
 	private final Map<Location, LocationView> locationViews = new HashMap<>();
 
+	private String defaultTheme = "sunset.css";
+
 	public ViewManager(Stage primaryStage) {
 		// Set up the main viewing window
 		this.primaryStage = primaryStage;
 		primaryStage.setTitle("Surfsy");
 		primaryStage.setResizable(false);
+	}
 
+	public void initializeViews(){
 		// Load the saved locations
 		loadLocations();
 
@@ -32,6 +36,22 @@ public class ViewManager {
 
 		// Show the primary stage
 		primaryStage.show();
+	}
+
+	protected FavouritesView getFavouritesView() {
+		return favouritesView;
+	}
+
+	protected Map<Location, LocationView> getLocationViews() {
+		return locationViews;
+	}
+
+	protected String getDefaultTheme(){
+		return defaultTheme;
+	}
+
+	protected void setDefaultTheme(String theme){
+		defaultTheme = theme;
 	}
 
 	private void loadLocations() {
