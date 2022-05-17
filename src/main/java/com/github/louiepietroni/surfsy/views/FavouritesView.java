@@ -5,6 +5,7 @@ import com.github.louiepietroni.surfsy.Surfsy;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXNodesList;
 
+import org.girod.javafx.svgimage.SVGImage;
 import org.girod.javafx.svgimage.SVGLoader;
 
 import javafx.geometry.NodeOrientation;
@@ -128,6 +129,7 @@ public class FavouritesView {
 		themeButton.getStyleClass().addAll("plus-button");
 		themeButton.setPrefSize(35, 35);
 		themeButton.setOnAction(e -> changeThemeToSunrise());
+		themeButton.setGraphic(img);
 		titlePane.setRight(themeButton);
 		HBox leftBuffer = new HBox();
 		leftBuffer.setPrefSize(35, 35);

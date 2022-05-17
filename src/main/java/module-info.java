@@ -3,7 +3,6 @@ module com.github.louiepietroni.surfsy {
 	requires javafx.fxml;
 	requires javafx.web;
 	requires java.desktop;
-	requires org.girod.javafx.svgimage;
 
 	requires org.controlsfx.controls;
 	requires com.dlsc.formsfx;
@@ -14,6 +13,7 @@ module com.github.louiepietroni.surfsy {
 	requires org.json;
 	requires com.sothawo.mapjfx;
 	requires com.jfoenix;
+	requires fxsvgimage;
 
 	opens com.github.louiepietroni.surfsy to javafx.fxml;
 
