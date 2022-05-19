@@ -23,10 +23,8 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 
 import java.io.InputStream;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Random;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 public class FavouritesView {
 	private final List<Location> favourites;
@@ -105,8 +103,17 @@ public class FavouritesView {
 	private JFXButton createLocationSummary(Location location) {
 		// Create a summary of a location
 		// TODO: Style the summary and include information about the locations data
-		var locationHolder = new HBox();
-		var locationSummary = new JFXButton(location.getName());
+
+		var currentHour = Integer.parseInt(new SimpleDateFormat("hh").format(new Date()));
+
+		var windSpeed = location.getDataAtTime("Wind Speed", 0, currentHour);
+		var airTemperature = location.getDataAtTime("Air Temperature", 0, currentHour);
+
+		Node temperatureBox = new VBox(new Text(Double.toString(windSpeed)));
+		Node windBox = new VBox(new Text(Double.toString(airTemperature)));
+		Node dataBox = new VBox(temperatureBox, windBox);
+
+		var locationSummary = new JFXButton(location.getName(), dataBox);
 
 		locationSummary.getStyleClass().addAll("widget-favourite-button", "widget-labelled");
 		locationSummary.setPrefSize(330, 120);
