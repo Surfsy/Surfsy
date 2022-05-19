@@ -1,7 +1,5 @@
 package com.github.louiepietroni.surfsy.views;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -9,16 +7,6 @@ import java.util.Map;
 import com.github.louiepietroni.surfsy.Location;
 
 import javafx.stage.Stage;
-
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
-
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.*;
 
 public class ViewManager {
 
@@ -28,6 +16,8 @@ public class ViewManager {
 	private FavouritesView favouritesView;
 
 	private AddMapView addMapView;
+
+	private CameraView cameraView;
 
 	private boolean locationsHaveChanged;
 	private final Map<Location, LocationView> locationViews = new HashMap<>();
@@ -113,9 +103,22 @@ public class ViewManager {
 		primaryStage.setScene(favouritesView.getScene());
 	}
 
+	public void setSceneToCameraView() {
+		// If the camera view hasn't been created yet, then make it
+		if (cameraView == null) {
+			createCameraView();
+		}
+		// Get the camera scene and show it
+		primaryStage.setScene(cameraView.getScene());
+	}
+
+	private void createCameraView() {
+		// Create the camera view from the list of locations
+		cameraView = new CameraView();
+	}
+
 	public void setSceneToAddSuggestedView() {
-		locationsHaveChanged = true;
-		Location.addToFile(new Location(30,30,"test beach"), "locations.json");
+
 
 		// TODO: create scene
 	}
@@ -123,9 +126,9 @@ public class ViewManager {
 		addMapView = new AddMapView();
 	}
 	public void setSceneToAddMapView() {
-		if (addMapView == null){
-			createAddMapView();
-		}
+
+		createAddMapView();
+
 
 		primaryStage.setScene(addMapView.getScene());
 		// TODO: create scene

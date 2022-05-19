@@ -104,33 +104,40 @@ public class APIHandler {
         return jsonToHashMap(jsonData);
     }
 
-    public static JSONObject apiCall(double latitude, double longitude) throws IOException {
-        List<String> parameters = Arrays.asList("airTemperature", "cloudCover", "currentDirection", "currentSpeed", "precipitation", "seaLevel", "visibility", "waterTemperature", "waveDirection", "waveHeight", "wavePeriod", "windDirection", "windSpeed");
-        String params = String.join(",", parameters);
-        String stormglassURL = String.format("https://api.stormglass.io/v2/weather/point?lat=%f&lng=%f&params=%s&source=sg", latitude, longitude, params);
+    public static JSONObject apiCall(double latitude, double longitude) {
+        try {
+            List<String> parameters = Arrays.asList("airTemperature", "cloudCover", "currentDirection", "currentSpeed", "precipitation", "seaLevel", "visibility", "waterTemperature", "waveDirection", "waveHeight", "wavePeriod", "windDirection", "windSpeed");
+            String params = String.join(",", parameters);
+            String stormglassURL = String.format("https://api.stormglass.io/v2/weather/point?lat=%f&lng=%f&params=%s&source=sg", latitude, longitude, params);
 
-        HttpURLConnection connection;
+            HttpURLConnection connection;
 
-        BufferedReader reader;
-        String line;
-        StringBuilder responseContent = new StringBuilder();
+            BufferedReader reader;
+            String line;
+            StringBuilder responseContent = new StringBuilder();
 
-        URL url = new URL(stormglassURL);
-        connection = (HttpURLConnection) url.openConnection();
+            URL url = new URL(stormglassURL);
+            connection = (HttpURLConnection) url.openConnection();
 
-        connection.setRequestMethod("GET");
-        connection.setRequestProperty("Authorization", "08d87bfa-c860-11ec-9863-0242ac130002-08d87c68-c860-11ec-9863-0242ac130002");
-        connection.setConnectTimeout(5000);
-        connection.setReadTimeout(5000);
+            connection.setRequestMethod("GET");
+            connection.setRequestProperty("Authorization", "08d87bfa-c860-11ec-9863-0242ac130002-08d87c68-c860-11ec-9863-0242ac130002");
+            connection.setConnectTimeout(5000);
+            connection.setReadTimeout(5000);
 
-        reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-        while ((line = reader.readLine()) != null) {
-            responseContent.append(line);
+            reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            while ((line = reader.readLine()) != null) {
+                responseContent.append(line);
+            }
+            reader.close();
+            connection.disconnect();
+
+            return new JSONObject(responseContent.toString());
         }
-        reader.close();
-        connection.disconnect();
+        catch (IOException e) {
+            return hashMap.get(hashMap.keySet().toArray()[0]);
+        }
 
-        return new JSONObject(responseContent.toString());
+
     }
 
     private static void printHashMap(HashMap<String, List<Double>> map) {

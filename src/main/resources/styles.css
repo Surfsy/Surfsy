@@ -49,8 +49,9 @@
 	-fx-font-family: 'Segoe UI';
 }
 
-.textEntry {
-	-fx-background-color: -fx-highlight-color;
+.text-field {
+	-fx-background-color: -fx-widget-bg-color;
+	-fx-prompt-text-fill: -fx-text-color;
 }
 
 .p {

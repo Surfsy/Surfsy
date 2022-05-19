@@ -50,6 +50,16 @@ public class Location {
 		return weatherData.get(convertFeatureNameForAPI(feature)).subList(24 * day, 24 * (day + 1));
 	}
 
+	public double getDataAtTime(String feature, int day, double time) {
+		if (time >= 23) {
+			return weatherData.get(convertFeatureNameForAPI(feature)).get(24 * day + 23);
+		}
+		int hour_before = (int) Math.floor(time);
+		List<Double> two_hours = weatherData.get(convertFeatureNameForAPI(feature)).subList(24 * day + hour_before, 24 * day + hour_before + 2);
+		double proportion = time % 1;
+		return (two_hours.get(1) - two_hours.get(0)) * proportion + two_hours.get(0);
+	}
+
 	/** List of weather features we have selected */
 	public List<String> getWeatherFeatures() {
 		return weatherFeatures;
@@ -164,5 +174,27 @@ public class Location {
 			throw new RuntimeException("IO Exception, location appending",e);
 		}
 
+	}
+	public static void removeFromFile(Location location, String filename){
+		try {
+			ArrayList<Location> locations = loadFromFile(filename);
+			locations.add(location);
+			JSONArray jsonArray = new JSONArray();
+			for (Location l : locations){
+				if (!(l.getName().equals(location.getName())&&l.getLongitude()==location.getLongitude()&&l.getLatitude()==location.getLatitude())) {
+					JSONObject lj = new JSONObject();
+					lj.put("latitude", l.getLatitude());
+					lj.put("longitude", l.getLongitude());
+					lj.put("name", l.getName());
+					jsonArray.add(lj);
+				}
+			}
+			FileWriter w = new FileWriter(String.format("src/main/resources/%s",filename));
+			w.write(jsonArray.toJSONString());
+			w.flush();
+
+		} catch (IOException e) {
+			throw new RuntimeException("IO Exception, location appending",e);
+		}
 	}
 }

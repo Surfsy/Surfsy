@@ -63,7 +63,6 @@ public class AddMapView {
     private void addNameEntryTextField(){
         nameEntry.setPromptText("Name");
         nameEntry.setFocusTraversable(false);
-        nameEntry.getStyleClass().add("textEntry");
         nameEntry.setPrefSize(300, 25);
         nameEntry.setMaxSize(300,25);
         textEntryNameContainer.getChildren().add(nameEntry);
@@ -73,7 +72,6 @@ public class AddMapView {
 
         longEntry.setPromptText("Longitude");
         longEntry.setFocusTraversable(false);
-        longEntry.getStyleClass().add("textEntry");
         longEntry.setPrefSize(100,25);
         longEntry.setMaxSize(100,25);
         textEntryCoordsContainer.getChildren().add(longEntry);
@@ -84,7 +82,6 @@ public class AddMapView {
 
         latEntry.setPromptText("Latitude");
         latEntry.setFocusTraversable(false);
-        latEntry.getStyleClass().add("textEntry");
         latEntry.setPrefSize(100,25);
         latEntry.setMaxSize(100,25);
         textEntryCoordsContainer.getChildren().add(latEntry);
