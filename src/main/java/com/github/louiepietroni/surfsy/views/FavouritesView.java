@@ -93,7 +93,6 @@ public class FavouritesView {
 		}
 	}
 	private void deleteLocation(Location location){
-		System.out.println("Boop");
 		Location.removeFromFile(location,"locations.json");
 		Surfsy.getViewManager().setLocationsHaveChanged();
 		Surfsy.getViewManager().setSceneToFavouritesView();
