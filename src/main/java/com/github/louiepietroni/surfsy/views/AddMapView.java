@@ -176,6 +176,7 @@ public class AddMapView {
         } catch (IllegalArgumentException e){
             Alert a = new Alert(Alert.AlertType.ERROR);
             a.setContentText("Please enter a name");
+            a.show();
         }
 
     }
