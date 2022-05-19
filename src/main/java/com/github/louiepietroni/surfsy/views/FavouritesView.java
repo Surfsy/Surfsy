@@ -94,15 +94,25 @@ public class FavouritesView {
 			addWidgetToFavouritesVBox(locationSummary);
 		}
 	}
+	private void deleteLocation(Location location){
+		System.out.println("Boop");
+		Location.removeFromFile(location,"locations.json");
+		Surfsy.getViewManager().setLocationsHaveChanged();
+		Surfsy.getViewManager().setSceneToFavouritesView();
+
+	}
 
 	private JFXButton createLocationSummary(Location location) {
 		// Create a summary of a location
 		// TODO: Style the summary and include information about the locations data
+		var locationHolder = new HBox();
 		var locationSummary = new JFXButton(location.getName());
 
 		locationSummary.getStyleClass().addAll("widget-favourite-button", "widget-labelled");
 		locationSummary.setPrefSize(330, 120);
 		locationSummary.setOnMouseClicked(e -> Surfsy.getViewManager().setSceneToLocationView(location));
+		locationSummary.setOnDragDetected(e-> deleteLocation(location));
+
 
 		return locationSummary;
 
