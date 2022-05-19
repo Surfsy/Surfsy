@@ -213,10 +213,10 @@ public class LocationView {
 			// Create the holder and populate it
 			var mapHolder = new BorderPane();
 
-			var windArrow = new Rectangle(40, 40);
+			var windArrow = new Button();
 			windArrow.getStyleClass().add("wind-arrow");
 			StackPane.setAlignment(windArrow, Pos.TOP_LEFT);
-			windArrow.setFill(Color.BLUE);
+			windArrow.setPrefSize(40, 40);
 
 			// RotateTransition rt = new RotateTransition(Duration.millis(3000), windArrow);
 			// rt.setByAngle(180);
