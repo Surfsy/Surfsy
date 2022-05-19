@@ -39,11 +39,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalUnit;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 public class LocationView {
 
@@ -120,7 +116,7 @@ public class LocationView {
 			final var yAxis = new NumberAxis();
 
 			// creating the chart
-			final var lineChart = new LineChart<Number, Number>(xAxis, yAxis);
+			final var lineChart = new LineChart<>(xAxis, yAxis);
 
 			// Make the background transparent, and remove the grid lines
 			lineChart.lookup(".chart-plot-background").setStyle("-fx-background-color: transparent");
@@ -209,6 +205,7 @@ public class LocationView {
 
 			var camButton = new JFXButton("Cam 1");
 			camButton.getStyleClass().add("btn2");
+			camButton.setOnAction(e -> Surfsy.getViewManager().setSceneToCameraView(location));
 
 			// Create the holder and populate it
 			var mapHolder = new BorderPane();
@@ -233,7 +230,7 @@ public class LocationView {
 			// Create the time of day slider
 			var tod_label = new Text();
 			var tod_slider = new Slider(0, 23.99, Calendar.getInstance().get(Calendar.HOUR_OF_DAY)
-					+ Calendar.getInstance().get(Calendar.MINUTE) / 60);
+					+ Calendar.getInstance().get(Calendar.MINUTE) / 60d);
 
 			tod_label.getStyleClass().add("p");
 			tod_label.textProperty().bind(
@@ -508,7 +505,7 @@ public class LocationView {
 		for (var n : to_remove) {
 			Widget r = null;
 			for (var w : activeWidgets) {
-				if (w.getName() == n) {
+				if (Objects.equals(w.getName(), n)) {
 					r = w;
 				}
 			}
