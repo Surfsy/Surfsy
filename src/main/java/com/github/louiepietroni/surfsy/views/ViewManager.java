@@ -109,7 +109,7 @@ public class ViewManager {
 			createCameraView();
 		}
 		// Get the camera scene and show it
-		primaryStage.setScene(favouritesView.getScene());
+		primaryStage.setScene(cameraView.getScene());
 	}
 
 	private void createCameraView() {
