@@ -205,10 +205,16 @@ public class LocationView {
 			mapText.getStyleClass().add("text");
 			mapText.textProperty().bind(Bindings.format("Map: %s", mapView.centerProperty()));
 
+			// change scene to
+
+			var camButton = new JFXButton("Cam 1");
+			camButton.getStyleClass().add("btn2");
+
 			// Create the holder and populate it
 			var mapHolder = new BorderPane();
 
 			var windArrow = new Rectangle(40, 40);
+			windArrow.getStyleClass().add("wind-arrow");
 			StackPane.setAlignment(windArrow, Pos.TOP_LEFT);
 			windArrow.setFill(Color.BLUE);
 
@@ -219,8 +225,7 @@ public class LocationView {
 			// rt.play();
 
 			var mapLayers = new StackPane();
-			mapLayers.getChildren().add(mapView);
-			mapLayers.getChildren().add(windArrow);
+			mapLayers.getChildren().addAll(mapView, new VBox(camButton, windArrow));
 
 			// Add map to border pane
 			BorderPane.setMargin(mapLayers, new Insets(12, 12, 12, 12));

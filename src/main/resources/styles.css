@@ -64,6 +64,13 @@
 	-fx-background-color: -fx-button-color;
 }
 
+.btn2 {
+	-fx-background-color: -fx-radio-button-dot-color;
+	-fx-text-fill: -fx-text-color;
+	-fx-font-size: 16;
+	-fx-font-family: 'Segoe UI';
+}
+
 .edit-button {
 	-fx-background-color: -fx-button-color;
 	-fx-background-radius: 10;
