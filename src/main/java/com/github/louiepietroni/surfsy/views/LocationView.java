@@ -345,6 +345,7 @@ public class LocationView {
 
 	private void addDayButtons() {
 		// Create a button for each day and add to the daysHBox
+		daysHBox.getStyleClass().add("btn");
 		for (int i = 0; i < 7; i++) {
 			JFXButton dayButton = createDayButton(i);
 			daysHBox.getChildren().add(dayButton);

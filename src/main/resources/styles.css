@@ -16,6 +16,8 @@
 
 .widget-rectangle {
 	-fx-fill: -fx-widget-bg-color;
+	-fx-arc-height: 30;
+	-fx-arc-width: 30;
 }
 
 .plus-button {
@@ -35,6 +37,10 @@
 	-fx-font-family: 'Segoe UI';
 }
 
+.btn {
+	-fx-background-color: -fx-button-color;
+}
+
 .edit-button {
 	-fx-background-color: -fx-button-color;
 	-fx-background-radius: 10;
@@ -42,7 +48,8 @@
 
 .day-button {
 	-fx-background-color: -fx-day-button-color;
-	-fx-background-radius: 0px;
+	-fx-background-radius: 10;
+	-fx-border-radius: 9;
 	-fx-border-color: -fx-button-color;
 	-fx-border-width: 1px;
 }
