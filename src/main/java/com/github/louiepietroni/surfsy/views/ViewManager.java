@@ -122,9 +122,9 @@ public class ViewManager {
 		addMapView = new AddMapView();
 	}
 	public void setSceneToAddMapView() {
-		if (addMapView == null){
-			createAddMapView();
-		}
+
+		createAddMapView();
+
 
 		primaryStage.setScene(addMapView.getScene());
 		// TODO: create scene
