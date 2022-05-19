@@ -27,6 +27,8 @@ public class ViewManager {
 
 	private FavouritesView favouritesView;
 
+	private AddMapView addMapView;
+
 	private boolean locationsHaveChanged;
 	private final Map<Location, LocationView> locationViews = new HashMap<>();
 
@@ -117,8 +119,15 @@ public class ViewManager {
 
 		// TODO: create scene
 	}
-
+	public void createAddMapView(){
+		addMapView = new AddMapView();
+	}
 	public void setSceneToAddMapView() {
+		if (addMapView == null){
+			createAddMapView();
+		}
+
+		primaryStage.setScene(addMapView.getScene());
 		// TODO: create scene
 	}
 }

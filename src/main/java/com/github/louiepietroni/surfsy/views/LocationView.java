@@ -191,6 +191,7 @@ public class LocationView {
 			mapText.getStyleClass().add("text");
 			mapText.textProperty().bind(Bindings.format("Map: %s", mapView.centerProperty()));
 
+
 			// Create the holder and populate it
 			var mapHolder = new BorderPane();
 
