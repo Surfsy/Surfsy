@@ -26,6 +26,8 @@ public class ViewManager {
 	private List<Location> locations;
 
 	private FavouritesView favouritesView;
+
+	private boolean locationsHaveChanged;
 	private final Map<Location, LocationView> locationViews = new HashMap<>();
 
 	private String defaultTheme = "sunset.css";
@@ -39,6 +41,7 @@ public class ViewManager {
 
 	public void initializeViews(){
 		// Load the saved locations
+		locationsHaveChanged = false;
 		loadLocations();
 
 		// This will create a location view for the first location and show its scene
@@ -71,13 +74,9 @@ public class ViewManager {
 		// to locations as a list
 		//Parsing from locations.json
 
-		try {
-			locations = Location.loadFromFile();
-		} catch (IOException e) {
-			throw new RuntimeException("Reader Exception, location handler",e);
-		} catch (ParseException e) {
-			throw new RuntimeException("Parse Exception, location handler",e);
-		}
+
+		locations = Location.loadFromFile();
+
 
 	}
 
@@ -98,12 +97,14 @@ public class ViewManager {
 
 	private void createFavouritesView() {
 		// Create the favourites view from the list of locations
+		loadLocations();
+		locationsHaveChanged = false;
 		favouritesView = new FavouritesView(locations);
 	}
 
 	public void setSceneToFavouritesView() {
 		// If the favourites view hasn't been created yet, then make it
-		if (favouritesView == null) {
+		if (favouritesView == null || locationsHaveChanged) {
 			createFavouritesView();
 		}
 		// Get the favourites scene and show it
@@ -111,6 +112,9 @@ public class ViewManager {
 	}
 
 	public void setSceneToAddSuggestedView() {
+		locationsHaveChanged = true;
+		Location.addToFile(new Location(30,30,"test beach"));
+
 		// TODO: create scene
 	}
 

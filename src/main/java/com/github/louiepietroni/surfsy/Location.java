@@ -5,10 +5,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.Reader;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
@@ -177,11 +174,12 @@ public class Location {
 		return feature.substring(0, 1).toLowerCase() + feature.substring(1).replaceAll("\\s+", "");
 	}
 
-	public static ArrayList<Location> loadFromFile() throws IOException, ParseException {
+	public static ArrayList<Location> loadFromFile(){
 		//"src/main/java/com/github/louiepietroni/surfsy/locations.json"
+		try {
 		JSONParser parser = new JSONParser();
 		ArrayList<Location> locations = new ArrayList<>();
-		try(FileReader r = new FileReader("src/main/resources/locations.json")) {
+		FileReader r = new FileReader("src/main/resources/locations.json");
 			Object ob = parser.parse(r);
 			JSONArray ja = (JSONArray) ob;
 			for (Object o : ja) {
@@ -189,10 +187,33 @@ public class Location {
 				Location loc = new Location((double) jo.get("latitude"), (double) jo.get("longitude"), (String) jo.get("name"));
 				locations.add(loc);
 			}
-		}
+
 		return locations;
+		} catch (IOException e) {
+			throw new RuntimeException("Reader Exception, location loading",e);
+		} catch (ParseException e) {
+			throw new RuntimeException("Parse Exception, location loading",e);
+		}
+	}
+	public static void addToFile(Location location) {
+		try {
+		ArrayList<Location> locations = loadFromFile();
+		locations.add(location);
+		JSONArray jsonArray = new JSONArray();
+		for (Location l : locations){
+			JSONObject lj = new JSONObject();
+			lj.put("latitude",l.getLatitude());
+			lj.put("longitude",l.getLongitude());
+			lj.put("name",l.getName());
+			jsonArray.add(lj);
+		}
+		FileWriter w = new FileWriter("src/main/resources/locations.json");
+			w.write(jsonArray.toJSONString());
+			w.flush();
 
-
+		} catch (IOException e) {
+			throw new RuntimeException("IO Exception, location appending",e);
+		}
 
 	}
 }
