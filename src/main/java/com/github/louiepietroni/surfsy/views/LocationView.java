@@ -208,15 +208,15 @@ public class LocationView {
 			// Create the holder and populate it
 			var mapHolder = new BorderPane();
 
-			// TODO: integrate with theme
-			mapHolder.getStyleClass().add("border-pane");
-			mapHolder.setMinSize(maxWidgetWidth, 240);
-			mapHolder.setMaxWidth(maxWidgetWidth);
-			mapHolder.setTop(mapText);
-
 			var windArrow = new Rectangle(40, 40);
 			StackPane.setAlignment(windArrow, Pos.TOP_LEFT);
 			windArrow.setFill(Color.BLUE);
+
+			// RotateTransition rt = new RotateTransition(Duration.millis(3000), windArrow);
+			// rt.setByAngle(180);
+			// rt.setCycleCount(4);
+			// rt.setAutoReverse(true);
+			// rt.play();
 
 			var mapLayers = new StackPane();
 			mapLayers.getChildren().add(mapView);
@@ -224,28 +224,37 @@ public class LocationView {
 
 			// Add map to border pane
 			BorderPane.setMargin(mapLayers, new Insets(12, 12, 12, 12));
-			mapHolder.setCenter(mapLayers);
 
 			// Create the time of day slider
 			var tod_label = new Text();
-			var tod_slider = new Slider(0, 24, Calendar.getInstance().get(Calendar.HOUR_OF_DAY));
+			var tod_slider = new Slider(0, 23.99, Calendar.getInstance().get(Calendar.HOUR_OF_DAY)
+					+ Calendar.getInstance().get(Calendar.MINUTE) / 60);
 
-			DateFormat fmt = new SimpleDateFormat();
 			tod_label.getStyleClass().add("p");
 			tod_label.textProperty().bind(
 					Bindings.createStringBinding(() -> {
 						var time = tod_slider.getValue();
+
 						int hours = (int) time;
 						int minutes = (int) (60 * (time - hours));
 						return String.format("%02d:%02d", hours, minutes);
 					}, tod_slider.valueProperty()));
 			var tod = new HBox(tod_label, tod_slider);
-			mapHolder.setBottom(tod);
 
-			windArrow.rotateProperty().add(Bindings.createDoubleBinding(() -> {
-				return 1.0;
+			windArrow.rotateProperty().bind(Bindings.createDoubleBinding(() -> {
+				var time = tod_slider.getValue();
+
+				var w = location.getDataAtTime("Wind Direction", day, time);
+
+				return w;
 			}, tod_slider.valueProperty()));
 
+			mapHolder.getStyleClass().add("border-pane");
+			mapHolder.setMinSize(maxWidgetWidth, 240);
+			mapHolder.setMaxWidth(maxWidgetWidth);
+			mapHolder.setTop(mapText);
+			mapHolder.setCenter(mapLayers);
+			mapHolder.setBottom(tod);
 			rootNode = mapHolder;
 		}
 
