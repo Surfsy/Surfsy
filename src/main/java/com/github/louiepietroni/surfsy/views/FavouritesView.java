@@ -88,7 +88,7 @@ public class FavouritesView {
 	private void addFavouritesSummaries() {
 		// Add all location summaries
 		for (Location location : favourites) {
-			var locationSummary = createLocationSummary(location);
+			var locationSummary = createLocationSummary(location, (favourites.size() > 1));
 			addWidgetToFavouritesVBox(locationSummary);
 		}
 	}
@@ -99,7 +99,7 @@ public class FavouritesView {
 
 	}
 
-	private JFXButton createLocationSummary(Location location) {
+	private JFXButton createLocationSummary(Location location, boolean moreThanOneLocation) {
 		// Create a summary of a location
 		// TODO: Style the summary and include information about the locations data
 
@@ -108,16 +108,32 @@ public class FavouritesView {
 		var windSpeed = location.getDataAtTime("Wind Speed", 0, currentHour);
 		var airTemperature = location.getDataAtTime("Air Temperature", 0, currentHour);
 
-		Node temperatureBox = new VBox(new Text(Double.toString(windSpeed)));
-		Node windBox = new VBox(new Text(Double.toString(airTemperature)));
+		Node temperatureBox = new VBox(new Text(String.format("%.2f mph",windSpeed)));
+		Node windBox = new VBox(new Text(String.format("%.2f ºC",airTemperature)));
 		Node dataBox = new VBox(temperatureBox, windBox);
 
-		var locationSummary = new JFXButton(location.getName(), dataBox);
+		JFXButton delete = new JFXButton("🚮");
+		delete.getStyleClass().add("plus-button");
+		delete.setOnAction(e -> deleteLocation(location));
+
+		VBox buffer = new VBox();
+		buffer.setMinSize(10,10);
+		HBox button;
+		if (moreThanOneLocation) {
+			button = new HBox(delete, buffer, dataBox);
+		} else {
+			button = new HBox(dataBox);
+		}
+
+
+
+		var locationSummary = new JFXButton(location.getName(), button);
 
 		locationSummary.getStyleClass().addAll("widget-favourite-button", "widget-labelled");
 		locationSummary.setPrefSize(330, 120);
+		locationSummary.setAlignment(Pos.BASELINE_LEFT);
 		locationSummary.setOnMouseClicked(e -> Surfsy.getViewManager().setSceneToLocationView(location));
-		locationSummary.setOnDragDetected(e-> deleteLocation(location));
+
 
 
 		return locationSummary;
@@ -216,14 +232,14 @@ public class FavouritesView {
 		plusButton.getStyleClass().add("plus-button");
 		plusButton.setPrefSize(45, 45);
 
-		JFXButton suggestedSearch = new JFXButton("R");
+		JFXButton suggestedSearch = new JFXButton("❤");
 		suggestedSearch.setButtonType(JFXButton.ButtonType.RAISED);
 		suggestedSearch.setStyle("-fx-background-radius: 90");
 		suggestedSearch.getStyleClass().add("plus-button");
 		suggestedSearch.setPrefSize(35, 35);
 		suggestedSearch.setOnAction(e -> Surfsy.getViewManager().setSceneToAddSuggestedView());
 
-		JFXButton mapSearch = new JFXButton("+");
+		JFXButton mapSearch = new JFXButton("🔍");
 		mapSearch.setButtonType(JFXButton.ButtonType.RAISED);
 		mapSearch.setStyle("-fx-background-radius: 30");
 		mapSearch.getStyleClass().add("plus-button");
