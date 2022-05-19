@@ -165,4 +165,26 @@ public class Location {
 		}
 
 	}
+	public static void removeFromFile(Location location, String filename){
+		try {
+			ArrayList<Location> locations = loadFromFile(filename);
+			locations.add(location);
+			JSONArray jsonArray = new JSONArray();
+			for (Location l : locations){
+				if (!(l.getName().equals(location.getName())&&l.getLongitude()==location.getLongitude()&&l.getLatitude()==location.getLatitude())) {
+					JSONObject lj = new JSONObject();
+					lj.put("latitude", l.getLatitude());
+					lj.put("longitude", l.getLongitude());
+					lj.put("name", l.getName());
+					jsonArray.add(lj);
+				}
+			}
+			FileWriter w = new FileWriter(String.format("src/main/resources/%s",filename));
+			w.write(jsonArray.toJSONString());
+			w.flush();
+
+		} catch (IOException e) {
+			throw new RuntimeException("IO Exception, location appending",e);
+		}
+	}
 }

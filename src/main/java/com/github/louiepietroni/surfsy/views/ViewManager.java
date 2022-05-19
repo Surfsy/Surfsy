@@ -115,7 +115,7 @@ public class ViewManager {
 
 	public void setSceneToAddSuggestedView() {
 		locationsHaveChanged = true;
-		Location.addToFile(new Location(30,30,"test beach"), "locations.json");
+		Location.removeFromFile(new Location(10d,10d,"blank"),"locations.json");
 
 		// TODO: create scene
 	}
