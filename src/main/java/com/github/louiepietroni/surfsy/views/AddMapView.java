@@ -8,6 +8,7 @@ import com.sothawo.mapjfx.offline.OfflineCache;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.layout.*;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
@@ -119,11 +120,20 @@ public class AddMapView {
                 .showZoomControls(false)
                 .build());
 
+        var pin = new Button();
+        pin.getStyleClass().add("pin-image");
+        StackPane.setAlignment(pin,Pos.CENTER);
+        pin.setPrefSize(5,10);
+        pin.rotateProperty().setValue(180);
+
         BorderPane mapBorder = new BorderPane();
         mapBorder.getStyleClass().add("border-pane");
         mapBorder.setMinSize(300,200);
         mapBorder.setCenter(mapView);
-        mapContainer.getChildren().add(mapBorder);
+
+        var mapLayers = new StackPane();
+        mapLayers.getChildren().addAll(mapBorder,pin);
+        mapContainer.getChildren().add(mapLayers);
     }
 
     private void setLatLong(){
