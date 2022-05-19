@@ -123,12 +123,12 @@ public class Location {
 		return feature.substring(0, 1).toLowerCase() + feature.substring(1).replaceAll("\\s+", "");
 	}
 
-	public static ArrayList<Location> loadFromFile(){
+	public static ArrayList<Location> loadFromFile(String filename){
 		//"src/main/java/com/github/louiepietroni/surfsy/locations.json"
 		try {
 		JSONParser parser = new JSONParser();
 		ArrayList<Location> locations = new ArrayList<>();
-		FileReader r = new FileReader("src/main/resources/locations.json");
+		FileReader r = new FileReader(String.format("src/main/resources/%s",filename));
 			Object ob = parser.parse(r);
 			JSONArray ja = (JSONArray) ob;
 			for (Object o : ja) {
@@ -144,9 +144,9 @@ public class Location {
 			throw new RuntimeException("Parse Exception, location loading",e);
 		}
 	}
-	public static void addToFile(Location location) {
+	public static void addToFile(Location location, String filename) {
 		try {
-		ArrayList<Location> locations = loadFromFile();
+		ArrayList<Location> locations = loadFromFile(filename);
 		locations.add(location);
 		JSONArray jsonArray = new JSONArray();
 		for (Location l : locations){
@@ -156,7 +156,7 @@ public class Location {
 			lj.put("name",l.getName());
 			jsonArray.add(lj);
 		}
-		FileWriter w = new FileWriter("src/main/resources/locations.json");
+		FileWriter w = new FileWriter(String.format("src/main/resources/%s",filename));
 			w.write(jsonArray.toJSONString());
 			w.flush();
 

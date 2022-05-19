@@ -27,6 +27,8 @@ public class ViewManager {
 
 	private FavouritesView favouritesView;
 
+	private AddMapView addMapView;
+
 	private boolean locationsHaveChanged;
 	private final Map<Location, LocationView> locationViews = new HashMap<>();
 
@@ -75,7 +77,7 @@ public class ViewManager {
 		//Parsing from locations.json
 
 
-		locations = Location.loadFromFile();
+		locations = Location.loadFromFile("locations.json");
 
 
 	}
@@ -113,12 +115,23 @@ public class ViewManager {
 
 	public void setSceneToAddSuggestedView() {
 		locationsHaveChanged = true;
-		Location.addToFile(new Location(30,30,"test beach"));
+		Location.addToFile(new Location(30,30,"test beach"), "locations.json");
 
 		// TODO: create scene
 	}
-
+	public void createAddMapView(){
+		addMapView = new AddMapView();
+	}
 	public void setSceneToAddMapView() {
+		if (addMapView == null){
+			createAddMapView();
+		}
+
+		primaryStage.setScene(addMapView.getScene());
 		// TODO: create scene
+	}
+
+	public void setLocationsHaveChanged(){
+		locationsHaveChanged = true;
 	}
 }
