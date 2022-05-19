@@ -77,7 +77,7 @@ public class ViewManager {
 		//Parsing from locations.json
 
 
-		locations = Location.loadFromFile();
+		locations = Location.loadFromFile("locations.json");
 
 
 	}
@@ -115,7 +115,7 @@ public class ViewManager {
 
 	public void setSceneToAddSuggestedView() {
 		locationsHaveChanged = true;
-		Location.addToFile(new Location(30,30,"test beach"));
+		Location.addToFile(new Location(30,30,"test beach"), "locations.json");
 
 		// TODO: create scene
 	}

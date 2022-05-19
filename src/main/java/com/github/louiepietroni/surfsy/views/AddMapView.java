@@ -165,7 +165,7 @@ public class AddMapView {
             double longitude = Double.parseDouble(longEntry.getText());
             double latitude = Double.parseDouble(latEntry.getText());
             Location loc = new Location(latitude,longitude,name);
-            Location.addToFile(loc);
+            Location.addToFile(loc, "locations.json");
             Surfsy.getViewManager().setLocationsHaveChanged();
             Surfsy.getViewManager().setSceneToFavouritesView();
 
