@@ -123,11 +123,17 @@ public class ViewManager {
 		addMapView = new AddMapView();
 	}
 	public void setSceneToAddMapView() {
+		System.out.println("I have been run");
 		if (addMapView == null){
+			System.out.println("Here");
 			createAddMapView();
 		}
 
 		primaryStage.setScene(addMapView.getScene());
 		// TODO: create scene
+	}
+
+	public void setLocationsHaveChanged(){
+		locationsHaveChanged = true;
 	}
 }

@@ -31,6 +31,15 @@
 	-fx-font-family: 'Segoe UI';
 }
 
+.h2 {
+	-fx-fill: -fx-text-color;
+	-fx-font-size: 20;
+	-fx-font-family: 'Segoe UI';
+}
+.textEntry {
+	-fx-background-color: -fx-highlight-color;
+}
+
 .p {
 	-fx-fill: -fx-text-color;
 	-fx-font-size: 16;
