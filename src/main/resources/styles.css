@@ -12,6 +12,7 @@
 
 .border-pane {
 	-fx-background-color: -fx-widget-bg-color;
+	-fx-background-radius: 30;
 }
 
 .widget-rectangle {
@@ -23,6 +24,7 @@
 .widget-labelled {
 	-fx-text-fill: -fx-text-color;
 	-fx-font-family: 'Segoe UI';
+	-fx-font-size: 20;
 }
 
 .widget-favourite-button {

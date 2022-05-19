@@ -33,10 +33,15 @@ import com.sothawo.mapjfx.MapView;
 import com.sothawo.mapjfx.Projection;
 import com.sothawo.mapjfx.offline.OfflineCache;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalUnit;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
 
@@ -47,6 +52,8 @@ public class LocationView {
 	abstract static class Widget {
 		protected Node rootNode;
 
+		protected String name;
+
 		public Widget() {
 			rootNode = null;
 		}
@@ -55,6 +62,12 @@ public class LocationView {
 			assert rootNode != null;
 
 			return rootNode;
+		}
+
+		public String getName() {
+			assert name != null;
+
+			return name;
 		}
 
 		public abstract void updateWidget();
@@ -73,6 +86,7 @@ public class LocationView {
 			text.setWrappingWidth(350);
 			text.setTextAlignment(TextAlignment.CENTER);
 			rootNode = text;
+			name = "Title";
 		}
 
 		@Override
@@ -87,7 +101,6 @@ public class LocationView {
 	 */
 	class GraphWidget extends Widget {
 
-		private final String name;
 		private final XYChart.Series<Number, Number> series;
 
 		/**
@@ -96,18 +109,18 @@ public class LocationView {
 		public GraphWidget(String name) {
 
 			super();
-
 			// Create the label text for this view
-			Text text = new Text(name);
+			var text = new Text(name);
 			text.getStyleClass().add("text");
 			text.getStyleClass().add("p");
+			BorderPane.setAlignment(text, Pos.CENTER);
 
 			// defining the axes
 			final var xAxis = new NumberAxis(0, 23, 3);
 			final var yAxis = new NumberAxis();
 
 			// creating the chart
-			final LineChart<Number, Number> lineChart = new LineChart<>(xAxis, yAxis);
+			final var lineChart = new LineChart<Number, Number>(xAxis, yAxis);
 
 			// Make the background transparent, and remove the grid lines
 			lineChart.lookup(".chart-plot-background").setStyle("-fx-background-color: transparent");
@@ -164,6 +177,7 @@ public class LocationView {
 	class MapWidget extends Widget {
 		public MapWidget() {
 			super();
+			name = "Map";
 			// Create the location map
 			// TODO: Create a map view of the location
 
@@ -191,7 +205,6 @@ public class LocationView {
 			mapText.getStyleClass().add("text");
 			mapText.textProperty().bind(Bindings.format("Map: %s", mapView.centerProperty()));
 
-
 			// Create the holder and populate it
 			var mapHolder = new BorderPane();
 
@@ -205,16 +218,33 @@ public class LocationView {
 			StackPane.setAlignment(windArrow, Pos.TOP_LEFT);
 			windArrow.setFill(Color.BLUE);
 
-			RotateTransition rt = new RotateTransition(Duration.millis(3000), windArrow);
-			rt.setByAngle(180);
-			rt.setCycleCount(4);
-			rt.setAutoReverse(true);
-			rt.play();
-
 			var mapLayers = new StackPane();
 			mapLayers.getChildren().add(mapView);
 			mapLayers.getChildren().add(windArrow);
+
+			// Add map to border pane
+			BorderPane.setMargin(mapLayers, new Insets(12, 12, 12, 12));
 			mapHolder.setCenter(mapLayers);
+
+			// Create the time of day slider
+			var tod_label = new Text();
+			var tod_slider = new Slider(0, 24, Calendar.getInstance().get(Calendar.HOUR_OF_DAY));
+
+			DateFormat fmt = new SimpleDateFormat();
+			tod_label.getStyleClass().add("p");
+			tod_label.textProperty().bind(
+					Bindings.createStringBinding(() -> {
+						var time = tod_slider.getValue();
+						int hours = (int) time;
+						int minutes = (int) (60 * (time - hours));
+						return String.format("%02d:%02d", hours, minutes);
+					}, tod_slider.valueProperty()));
+			var tod = new HBox(tod_label, tod_slider);
+			mapHolder.setBottom(tod);
+
+			windArrow.rotateProperty().add(Bindings.createDoubleBinding(() -> {
+				return 1.0;
+			}, tod_slider.valueProperty()));
 
 			rootNode = mapHolder;
 		}
@@ -291,6 +321,7 @@ public class LocationView {
 		for (Widget widget : activeWidgets) {
 			widgetVBox.getChildren().add(widget.getNode());
 		}
+
 		updateWidgets();
 
 		// Create edit feature button
@@ -314,6 +345,10 @@ public class LocationView {
 		// Set up the edit list vBox
 		editListVBox.setPadding(new Insets(0, 0, 0, 50));
 		editListVBox.setSpacing(4);
+
+		// Scroll box is the thing being scrolled, contains all widgets + the edit
+		// button
+		scrollVBox.setAlignment(Pos.CENTER);
 
 		// Set up the outside vBox
 		outsideVBox.setMinSize(350, 700);
@@ -394,7 +429,7 @@ public class LocationView {
 		editFeatureButton.setOnAction(e -> enterEditMode());
 		editFeatureButton.setText("Edit widgets");
 
-		widgetVBox.getChildren().add(editFeatureButton);
+		scrollVBox.getChildren().add(editFeatureButton);
 	}
 
 	private void createEditListView() {
@@ -432,17 +467,54 @@ public class LocationView {
 	}
 
 	private void saveEditListToLocation() {
+		var old_features = new HashSet<>(location.getWeatherFeatures());
+
+		var to_remove = new HashSet<String>();
+		var to_add = new HashSet<String>();
+
 		// Take the data from the radio buttons and update the location with the new
 		// features, then save the location to file
 		for (Node editListItem : editListVBox.getChildren()) {
 			RadioButton editListButton = (RadioButton) editListItem;
 			String feature = editListButton.getText();
 			boolean selected = editListButton.isSelected();
+
+			if (selected && !old_features.contains(feature)) {
+				to_add.add(feature);
+			} else if (!selected && old_features.contains(feature)) {
+				to_remove.add(feature);
+			}
+
 			location.updateFeature(feature, selected);
 		}
 		location.saveLocation();
+
+		System.out.println("Removing " + to_remove);
+		// Remove all unused widgets
+		for (var n : to_remove) {
+			Widget r = null;
+			for (var w : activeWidgets) {
+				if (w.getName() == n) {
+					r = w;
+				}
+			}
+
+			widgetVBox.getChildren().remove(r.getNode());
+			activeWidgets.remove(r);
+		}
+		// Add all new widgets
+		for (var n : to_add) {
+
+			var w = new GraphWidget(n);
+			activeWidgets.add(w);
+			widgetVBox.getChildren().add(w.getNode());
+
+		}
+
+		System.out.println("Adding " + to_add);
+
 		// use this new location info to regenerate widgets
-		generateWidgets();
+		// generateWidgets();
 	}
 
 	private void updateWidgets() {
