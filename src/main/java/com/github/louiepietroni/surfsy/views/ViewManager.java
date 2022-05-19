@@ -16,6 +16,7 @@ public class ViewManager {
 	private FavouritesView favouritesView;
 
 	private AddMapView addMapView;
+	private AddSuggestedView addSuggestedView;
 
 	private boolean locationsHaveChanged;
 	private final Map<Location, LocationView> locationViews = new HashMap<>();
@@ -120,13 +121,18 @@ public class ViewManager {
 		// Get the favourites scene and show it
 		primaryStage.setScene(favouritesView.getScene());
 	}
-
+	private void createAddSuggestedView(){addSuggestedView = new AddSuggestedView();}
 	public void setSceneToAddSuggestedView() {
+		if (addSuggestedView == null){
+			createAddSuggestedView();
+		}
+		System.out.println("Here");
+		primaryStage.setScene(addSuggestedView.getScene());
 
 
 		// TODO: create scene
 	}
-	public void createAddMapView(){
+	private void createAddMapView(){
 		addMapView = new AddMapView();
 	}
 	public void setSceneToAddMapView() {
