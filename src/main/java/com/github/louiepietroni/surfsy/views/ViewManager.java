@@ -17,10 +17,9 @@ public class ViewManager {
 
 	private AddMapView addMapView;
 
-	private CameraView cameraView;
-
 	private boolean locationsHaveChanged;
 	private final Map<Location, LocationView> locationViews = new HashMap<>();
+	private final Map<Location, CameraView> cameraViews = new HashMap<>();
 
 	private String defaultTheme = "sunset.css";
 
@@ -49,6 +48,10 @@ public class ViewManager {
 
 	protected Map<Location, LocationView> getLocationViews() {
 		return locationViews;
+	}
+
+	protected Map<Location, CameraView> getCameraViews() {
+		return cameraViews;
 	}
 
 	protected String getDefaultTheme(){
@@ -87,6 +90,21 @@ public class ViewManager {
 		primaryStage.setScene(locationViews.get(location).getScene());
 	}
 
+	private void createCameraView(Location location) {
+		// Create the camera view from the list of locations
+		CameraView cameraView = new CameraView(location);
+		cameraViews.put(location, cameraView);
+	}
+
+	public void setSceneToCameraView(Location location) {
+		// If we haven't already created the camera view for this location, create it
+		if (!cameraViews.containsKey(location)) {
+			createCameraView(location);
+		}
+		// Get the scene for this location view and show it
+		primaryStage.setScene(cameraViews.get(location).getScene());
+	}
+
 	private void createFavouritesView() {
 		// Create the favourites view from the list of locations
 		loadLocations();
@@ -101,20 +119,6 @@ public class ViewManager {
 		}
 		// Get the favourites scene and show it
 		primaryStage.setScene(favouritesView.getScene());
-	}
-
-	public void setSceneToCameraView() {
-		// If the camera view hasn't been created yet, then make it
-		if (cameraView == null) {
-			createCameraView();
-		}
-		// Get the camera scene and show it
-		primaryStage.setScene(cameraView.getScene());
-	}
-
-	private void createCameraView() {
-		// Create the camera view from the list of locations
-		cameraView = new CameraView();
 	}
 
 	public void setSceneToAddSuggestedView() {
