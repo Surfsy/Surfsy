@@ -203,8 +203,9 @@ public class LocationView {
 
 			// change scene to
 
-			var camButton = new JFXButton("Cam 1");
-			camButton.getStyleClass().add("btn2");
+			var camButton = new JFXButton();
+			camButton.setPrefSize(30,20);
+			camButton.getStyleClass().add("camera-button");
 			camButton.setOnAction(e -> Surfsy.getViewManager().setSceneToCameraView(location));
 
 			// Create the holder and populate it
@@ -248,7 +249,7 @@ public class LocationView {
 
 				var w = location.getDataAtTime("Wind Direction", day, time);
 
-				return w;
+				return w-90;
 			}, tod_slider.valueProperty()));
 
 			mapHolder.getStyleClass().add("border-pane");

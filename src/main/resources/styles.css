@@ -64,11 +64,10 @@
 	-fx-background-color: -fx-button-color;
 }
 
-.btn2 {
+.camera-button {
 	-fx-background-color: -fx-radio-button-dot-color;
-	-fx-text-fill: -fx-text-color;
-	-fx-font-size: 16;
-	-fx-font-family: 'Segoe UI';
+	-fx-shape: "M488.3,142.5v203.1c0,15.7-17,25.5-30.6,17.7l-84.6-48.8v13.9c0,41.8-33.9,75.7-75.7,75.7H75.7C33.9,404.1,0,370.2,0,328.4
+		V159.9c0-41.8,33.9-75.7,75.7-75.7h221.8c41.8,0,75.7,33.9,75.7,75.7v13.9l84.6-48.8C471.3,117,488.3,126.9,488.3,142.5z";
 }
 
 .edit-button {
