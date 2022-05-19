@@ -10,6 +10,7 @@ import org.girod.javafx.svgimage.SVGImage;
 import org.girod.javafx.svgimage.SVGLoader;
 
 import javafx.geometry.NodeOrientation;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.ScrollPane;
@@ -73,6 +74,7 @@ public class FavouritesView {
 
 		// Setup the favourites vBox
 		favouritesVBox.setSpacing(5);
+		favouritesVBox.setAlignment(Pos.TOP_CENTER);
 		favouritesVBox.setMinSize(350, Math.max(125 * favourites.size() + 100, 630));
 
 		BigBox.setMinSize(350, 700);
@@ -88,26 +90,34 @@ public class FavouritesView {
 	private void addFavouritesSummaries() {
 		// Add all location summaries
 		for (Location location : favourites) {
-			StackPane locationSummary = createLocationSummary(location);
+			var locationSummary = createLocationSummary(location);
 			addWidgetToFavouritesVBox(locationSummary);
 		}
 	}
 
-	private StackPane createLocationSummary(Location location) {
+	private JFXButton createLocationSummary(Location location) {
 		// Create a summary of a location
 		// TODO: Style the summary and include information about the locations data
-		StackPane locationSummary = new StackPane();
-		locationSummary.setMinSize(330, 120);
+		var locationSummary = new JFXButton(location.getName());
 
-		Rectangle rect = new Rectangle(330, 120);
-		rect.getStyleClass().add("widget-rectangle");
-		locationSummary.getChildren().add(rect);
-		Text text = new Text(location.getName());
-		text.getStyleClass().add("text");
-		locationSummary.getChildren().add(text);
+		locationSummary.getStyleClass().add("widget-favourite-button");
+		locationSummary.setPrefSize(330, 120);
 		locationSummary.setOnMouseClicked(e -> Surfsy.getViewManager().setSceneToLocationView(location));
 
 		return locationSummary;
+
+		// locationSummary.setMinSize(330, 120);
+
+		// Rectangle rect = new Rectangle(330, 120);
+		// rect.getStyleClass().add("widget-rectangle");
+		// locationSummary.getChildren().add(rect);
+		// Text text = new Text(location.getName());
+		// text.getStyleClass().add("text");
+		// locationSummary.getChildren().add(text);
+		// locationSummary.setOnMouseClicked(e ->
+		// Surfsy.getViewManager().setSceneToLocationView(location));
+
+		// return locationSummary;
 	}
 
 	private void addFavouritesTitle() {
@@ -137,7 +147,7 @@ public class FavouritesView {
 		HBox leftBuffer = new HBox();
 		leftBuffer.setPrefSize(50, 45);
 		titlePane.setLeft(leftBuffer);
-		if (Objects.equals(Surfsy.getViewManager().getDefaultTheme(), "sunrise.css")){
+		if (Objects.equals(Surfsy.getViewManager().getDefaultTheme(), "sunrise.css")) {
 			themeButton.pseudoClassStateChanged(PseudoClass.getPseudoClass("light"), true);
 		}
 	}
