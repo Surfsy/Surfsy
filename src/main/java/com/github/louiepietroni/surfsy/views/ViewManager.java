@@ -1,24 +1,47 @@
 package com.github.louiepietroni.surfsy.views;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import com.github.louiepietroni.surfsy.Location;
+
 import javafx.stage.Stage;
 
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.*;
 
 public class ViewManager {
+
 	private final Stage primaryStage;
 	private List<Location> locations;
 
 	private FavouritesView favouritesView;
+
+	private boolean locationsHaveChanged;
 	private final Map<Location, LocationView> locationViews = new HashMap<>();
+
+	private String defaultTheme = "sunset.css";
 
 	public ViewManager(Stage primaryStage) {
 		// Set up the main viewing window
 		this.primaryStage = primaryStage;
 		primaryStage.setTitle("Surfsy");
 		primaryStage.setResizable(false);
+	}
 
+	public void initializeViews(){
 		// Load the saved locations
+		locationsHaveChanged = false;
 		loadLocations();
 
 		// This will create a location view for the first location and show its scene
@@ -28,14 +51,33 @@ public class ViewManager {
 		primaryStage.show();
 	}
 
+	protected FavouritesView getFavouritesView() {
+		return favouritesView;
+	}
+
+	protected Map<Location, LocationView> getLocationViews() {
+		return locationViews;
+	}
+
+	protected String getDefaultTheme(){
+		return defaultTheme;
+	}
+
+	protected void setDefaultTheme(String theme){
+		defaultTheme = theme;
+	}
+
 	private void loadLocations() {
+
+
 		// Location.loadFavourites(), passing in a file or something and save all these
 		// to locations as a list
+		//Parsing from locations.json
 
-		Location thurlestoneBeach = new Location(50.25993, -3.86041, "Thurlestone Beach");
-		Location fistralBay = new Location(50.41747, -5.10384, "Fistral Bay");
-		Location stupid = new Location(50.2816397,-3.8950334,"Big Beach");
-		locations = new ArrayList<>(Arrays.asList(thurlestoneBeach, fistralBay, stupid));
+
+		locations = Location.loadFromFile();
+
+
 	}
 
 	private void createLocationView(Location location) {
@@ -55,23 +97,28 @@ public class ViewManager {
 
 	private void createFavouritesView() {
 		// Create the favourites view from the list of locations
+		loadLocations();
+		locationsHaveChanged = false;
 		favouritesView = new FavouritesView(locations);
 	}
 
 	public void setSceneToFavouritesView() {
 		// If the favourites view hasn't been created yet, then make it
-		if (favouritesView == null) {
+		if (favouritesView == null || locationsHaveChanged) {
 			createFavouritesView();
 		}
 		// Get the favourites scene and show it
 		primaryStage.setScene(favouritesView.getScene());
 	}
 
-	public void setSceneToAddSuggestedView(){
-		//TODO: create scene
+	public void setSceneToAddSuggestedView() {
+		locationsHaveChanged = true;
+		Location.addToFile(new Location(30,30,"test beach"));
+
+		// TODO: create scene
 	}
 
-	public void setSceneToAddMapView(){
-		//TODO: create scene
+	public void setSceneToAddMapView() {
+		// TODO: create scene
 	}
 }

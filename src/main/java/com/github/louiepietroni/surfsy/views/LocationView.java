@@ -7,9 +7,11 @@ import com.sothawo.mapjfx.Configuration;
 import com.sothawo.mapjfx.Coordinate;
 import com.sothawo.mapjfx.MapType;
 
+import javafx.animation.RotateTransition;
 import javafx.beans.binding.Bindings;
 import javafx.css.PseudoClass;
 import javafx.geometry.Insets;
+import javafx.geometry.Point3D;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -24,10 +26,16 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
+import javafx.scene.transform.Rotate;
+import javafx.util.Duration;
+
 import com.sothawo.mapjfx.MapView;
 import com.sothawo.mapjfx.Projection;
 import com.sothawo.mapjfx.offline.OfflineCache;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -191,7 +199,21 @@ public class LocationView {
 			mapHolder.setMinSize(maxWidgetWidth, 240);
 			mapHolder.setMaxWidth(maxWidgetWidth);
 			mapHolder.setTop(mapText);
-			mapHolder.setCenter(mapView);
+
+			var windArrow = new Rectangle(40, 40);
+			StackPane.setAlignment(windArrow, Pos.TOP_LEFT);
+			windArrow.setFill(Color.BLUE);
+
+			RotateTransition rt = new RotateTransition(Duration.millis(3000), windArrow);
+			rt.setByAngle(180);
+			rt.setCycleCount(4);
+			rt.setAutoReverse(true);
+			rt.play();
+
+			var mapLayers = new StackPane();
+			mapLayers.getChildren().add(mapView);
+			mapLayers.getChildren().add(windArrow);
+			mapHolder.setCenter(mapLayers);
 
 			rootNode = mapHolder;
 		}
@@ -235,7 +257,8 @@ public class LocationView {
 	private final VBox editListVBox = new VBox();
 
 	public LocationView(Location location) {
-		scene.getStylesheets().add("sunset.css");
+		scene.getStylesheets().clear();
+		scene.getStylesheets().add(Surfsy.getViewManager().getDefaultTheme());
 		this.location = location;
 
 		// Create widgets and fill them with data
@@ -331,15 +354,16 @@ public class LocationView {
 
 	private JFXButton createDayButton(int buttonDay) {
 		// Creates a button for a day, which will update the displayed data
-		// TODO: Style this to be a button corresponding to i days from today
+		// Style this to be a button corresponding to i days from today
+		var now = LocalDateTime.now().plusDays(buttonDay);
+
 		JFXButton dayButton = new JFXButton();
 		dayButton.setButtonType(JFXButton.ButtonType.RAISED);
 		dayButton.getStyleClass().add("day-button");
-		dayButton.setMinSize(42, 42);
-		dayButton.setMaxSize(42, 42);
+		dayButton.setPrefSize(42, 42);
 		dayButton.setOnAction(e -> updateDay(buttonDay));
 
-		dayButton.setText(Integer.toString(buttonDay));
+		dayButton.setText(now.format(DateTimeFormatter.ofPattern("dd")));
 
 		return dayButton;
 	}
@@ -437,10 +461,10 @@ public class LocationView {
 		// Reset all the buttons, the update the selected one
 		for (int i = 0; i < 7; i++) {
 			JFXButton dayButton = (JFXButton) daysHBox.getChildren().get(i);
-			dayButton.pseudoClassStateChanged(PseudoClass.getPseudoClass("active"),false);
+			dayButton.pseudoClassStateChanged(PseudoClass.getPseudoClass("active"), false);
 		}
 		JFXButton selectedDayButton = (JFXButton) daysHBox.getChildren().get(day);
-		selectedDayButton.pseudoClassStateChanged(PseudoClass.getPseudoClass("active"),true);
+		selectedDayButton.pseudoClassStateChanged(PseudoClass.getPseudoClass("active"), true);
 	}
 
 	// private void updateLocationFeatures() {

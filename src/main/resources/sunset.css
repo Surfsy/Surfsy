@@ -1,13 +1,13 @@
 @import "styles.css";
 
 * {
-	-fx-main-bg-color: '#000000';
-	-fx-text-color: '#F3E1CD';
-	-fx-symbol-color: '#E16A26';
-	-fx-widget-bg-color: '#4C4A4A';
-	-fx-button-color: '#A32C22';
-	-fx-day-button-color: '#959191';
-	-fx-radio-button-dot-color: '#89341C';
-	-fx-color3: '#005C8F';
-	-fx-color3: '#009BBF';
+	-fx-main-bg-color: #000000;
+	-fx-button-color: #A32C22;
+	-fx-highlight-color: #E16A26;
+	-fx-color3: #89341C;
+	-fx-widget-bg-color: #4C4A4A;
+	-fx-color3: #005C8F;
+	-fx-radio-button-dot-color: #009BBF;
+	-fx-text-color: #F3E1CD;
+	-fx-day-button-color: #959191;
 }

@@ -18,6 +18,7 @@ public class Surfsy extends Application {
     public void start(Stage primaryStage) {
 //        Create a view manager which handles the operation of the app
         viewManager = new ViewManager(primaryStage);
+        viewManager.initializeViews();
     }
 
     public static ViewManager getViewManager() {
