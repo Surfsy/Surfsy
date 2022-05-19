@@ -20,6 +20,11 @@
 	-fx-arc-width: 30;
 }
 
+.widget-labelled {
+	-fx-text-fill: -fx-text-color;
+	-fx-font-family: 'Segoe UI';
+}
+
 .widget-favourite-button {
 	-fx-background-color: -fx-widget-bg-color;
 	-fx-background-radius: 30;

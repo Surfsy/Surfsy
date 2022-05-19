@@ -100,7 +100,7 @@ public class FavouritesView {
 		// TODO: Style the summary and include information about the locations data
 		var locationSummary = new JFXButton(location.getName());
 
-		locationSummary.getStyleClass().add("widget-favourite-button");
+		locationSummary.getStyleClass().addAll("widget-favourite-button", "widget-labelled");
 		locationSummary.setPrefSize(330, 120);
 		locationSummary.setOnMouseClicked(e -> Surfsy.getViewManager().setSceneToLocationView(location));
 
