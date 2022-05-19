@@ -50,6 +50,16 @@ public class Location {
 		return weatherData.get(convertFeatureNameForAPI(feature)).subList(24 * day, 24 * (day + 1));
 	}
 
+	public double getDataAtTime(String feature, int day, double time) {
+		if (time >= 23) {
+			return weatherData.get(convertFeatureNameForAPI(feature)).get(24 * day + 23);
+		}
+		int hour_before = (int) Math.floor(time);
+		List<Double> two_hours = weatherData.get(convertFeatureNameForAPI(feature)).subList(24 * day + hour_before, 24 * day + hour_before + 2);
+		double proportion = time % 1;
+		return (two_hours.get(1) - two_hours.get(0)) * proportion + two_hours.get(0);
+	}
+
 	/** List of weather features we have selected */
 	public List<String> getWeatherFeatures() {
 		return weatherFeatures;
