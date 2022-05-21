@@ -5,7 +5,9 @@ import java.util.List;
 import java.util.Map;
 
 import com.github.louiepietroni.surfsy.Location;
+import com.jfoenix.controls.JFXButton;
 
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 public class ViewManager {
@@ -31,7 +33,7 @@ public class ViewManager {
 		primaryStage.setResizable(false);
 	}
 
-	public void initializeViews(){
+	public void initializeViews() {
 		// Load the saved locations
 		locationsHaveChanged = false;
 		loadLocations();
@@ -41,6 +43,18 @@ public class ViewManager {
 
 		// Show the primary stage
 		primaryStage.show();
+	}
+
+	public static JFXButton createButton(String name) {
+		var n = new JFXButton(name);
+		n.getStyleClass().addAll("plus-button", "widget-labelled");
+		return n;
+	}
+
+	public static Text createParagraphText(String name) {
+		var n = new Text(name);
+		n.getStyleClass().add("p");
+		return n;
 	}
 
 	protected FavouritesView getFavouritesView() {
@@ -55,24 +69,21 @@ public class ViewManager {
 		return cameraViews;
 	}
 
-	protected String getDefaultTheme(){
+	protected String getDefaultTheme() {
 		return defaultTheme;
 	}
 
-	protected void setDefaultTheme(String theme){
+	protected void setDefaultTheme(String theme) {
 		defaultTheme = theme;
 	}
 
 	private void loadLocations() {
 
-
 		// Location.loadFavourites(), passing in a file or something and save all these
 		// to locations as a list
-		//Parsing from locations.json
-
+		// Parsing from locations.json
 
 		locations = Location.loadFromFile("locations.json");
-
 
 	}
 
@@ -121,30 +132,34 @@ public class ViewManager {
 		// Get the favourites scene and show it
 		primaryStage.setScene(favouritesView.getScene());
 	}
-	private void createAddSuggestedView(){addSuggestedView = new AddSuggestedView();}
+
+	private void createAddSuggestedView() {
+		addSuggestedView = new AddSuggestedView();
+	}
+
 	public void setSceneToAddSuggestedView() {
-		if (addSuggestedView == null){
+		if (addSuggestedView == null) {
 			createAddSuggestedView();
 		}
 		System.out.println("Here");
 		primaryStage.setScene(addSuggestedView.getScene());
 
-
 		// TODO: create scene
 	}
-	private void createAddMapView(){
+
+	private void createAddMapView() {
 		addMapView = new AddMapView();
 	}
+
 	public void setSceneToAddMapView() {
 
 		createAddMapView();
-
 
 		primaryStage.setScene(addMapView.getScene());
 		// TODO: create scene
 	}
 
-	public void setLocationsHaveChanged(){
+	public void setLocationsHaveChanged() {
 		locationsHaveChanged = true;
 	}
 }

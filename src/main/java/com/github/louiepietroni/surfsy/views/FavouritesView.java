@@ -3,16 +3,26 @@ package com.github.louiepietroni.surfsy.views;
 import com.github.louiepietroni.surfsy.Location;
 import com.github.louiepietroni.surfsy.Surfsy;
 import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXDialog;
+import com.jfoenix.controls.JFXHamburger;
 import com.jfoenix.controls.JFXNodesList;
+import com.jfoenix.controls.JFXPopup;
+import com.jfoenix.controls.JFXRippler;
+import com.jfoenix.controls.JFXPopup.PopupHPosition;
+import com.jfoenix.controls.JFXPopup.PopupVPosition;
+import com.jfoenix.controls.JFXRippler.RipplerMask;
+import com.jfoenix.controls.JFXRippler.RipplerPos;
 
 import javafx.css.PseudoClass;
 import org.girod.javafx.svgimage.SVGImage;
 import org.girod.javafx.svgimage.SVGLoader;
 
+import javafx.geometry.Insets;
 import javafx.geometry.NodeOrientation;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
@@ -34,9 +44,11 @@ public class FavouritesView {
 	// The scroll pane holds the favouritesVBox and allows it to scroll if needed
 	private final ScrollPane favouritesScrollPane = new ScrollPane(favouritesVBox);
 
-	private final VBox BigBox = new VBox(favouritesScrollPane, plusBox);// Lost in a dream, snake eater
+	private final VBox BigBox = new VBox(favouritesScrollPane, plusBox); // Lost in a dream, snake eater
+	private final StackPane rootStack = new StackPane(BigBox);
+
 	// The scene holds the whole view which is inside the scroll pane
-	private final Scene scene = new Scene(BigBox, 350, 700);
+	private final Scene scene = new Scene(rootStack, 350, 700);
 
 	private BorderPane titlePane;
 
@@ -92,8 +104,9 @@ public class FavouritesView {
 			addWidgetToFavouritesVBox(locationSummary);
 		}
 	}
-	private void deleteLocation(Location location){
-		Location.removeFromFile(location,"locations.json");
+
+	private void deleteLocation(Location location) {
+		Location.removeFromFile(location, "locations.json");
 		Surfsy.getViewManager().setLocationsHaveChanged();
 		Surfsy.getViewManager().setSceneToFavouritesView();
 
@@ -108,16 +121,61 @@ public class FavouritesView {
 		var windSpeed = location.getDataAtTime("Wind Speed", 0, currentHour);
 		var airTemperature = location.getDataAtTime("Air Temperature", 0, currentHour);
 
-		Node temperatureBox = new VBox(new Text(String.format("%.2f mph",windSpeed)));
-		Node windBox = new VBox(new Text(String.format("%.2f ºC",airTemperature)));
+		Node temperatureBox = new VBox(ViewManager.createParagraphText(String.format("%.2f mph", windSpeed)));
+		Node windBox = new VBox(ViewManager.createParagraphText(String.format("%.2f ºC", airTemperature)));
 		Node dataBox = new VBox(temperatureBox, windBox);
 
-		JFXButton delete = new JFXButton("🚮");
-		delete.getStyleClass().add("plus-button");
-		delete.setOnAction(e -> deleteLocation(location));
+		JFXButton delete = ViewManager.createButton("🚮");
+
+		// Create the deletion dialogue
+		var dialog = new JFXDialog();
+
+		var dialogue_contents = new BorderPane();
+		var dialogue_label = ViewManager.createParagraphText("Are you sure you wish to delete this?");
+		final var spacer0 = new Region();
+		final var spacer1 = new Region();
+		final var spacer2 = new Region();
+		// Make it always grow or shrink according to the available space
+		HBox.setHgrow(spacer0, Priority.ALWAYS);
+		HBox.setHgrow(spacer1, Priority.ALWAYS);
+		HBox.setHgrow(spacer2, Priority.ALWAYS);
+
+		var dialogue_confirm = ViewManager.createButton("Yes");
+		var dialogue_cancel = ViewManager.createButton("No");
+
+		dialogue_confirm.setPrefSize(60, 40);
+		dialogue_cancel.setPrefSize(60, 40);
+
+		var dialogue_buttons = new HBox(spacer0, dialogue_confirm, spacer1, dialogue_cancel, spacer2);
+
+		Insets insets = new Insets(10);
+
+		dialogue_label.getStyleClass().add("p");
+		dialogue_contents.setCenter(dialogue_label);
+		dialogue_contents.setBottom(dialogue_buttons);
+		dialogue_contents.getStyleClass().add("border-pane");
+		// Give a nice margin around elements
+		BorderPane.setMargin(dialogue_label, insets);
+		BorderPane.setMargin(dialogue_buttons, insets);
+
+		dialog.setContent(dialogue_contents);
+		// Only way to access background property of dialogue
+		((StackPane) dialogue_contents.getParent()).setBackground(null);
+
+		dialogue_confirm.setOnAction(e -> {
+			deleteLocation(location);
+		});
+		dialogue_cancel.setOnAction(e -> {
+			dialog.close();
+		});
+
+		delete.setOnAction(e -> {
+
+			dialog.show(rootStack);
+		});
 
 		VBox buffer = new VBox();
-		buffer.setMinSize(10,10);
+		buffer.setMinSize(10, 10);
 		HBox button;
 		if (moreThanOneLocation) {
 			button = new HBox(delete, buffer, dataBox);
@@ -125,16 +183,12 @@ public class FavouritesView {
 			button = new HBox(dataBox);
 		}
 
-
-
 		var locationSummary = new JFXButton(location.getName(), button);
 
 		locationSummary.getStyleClass().addAll("widget-favourite-button", "widget-labelled");
 		locationSummary.setPrefSize(330, 120);
 		locationSummary.setAlignment(Pos.BASELINE_LEFT);
 		locationSummary.setOnMouseClicked(e -> Surfsy.getViewManager().setSceneToLocationView(location));
-
-
 
 		return locationSummary;
 

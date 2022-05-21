@@ -3,6 +3,7 @@ package com.github.louiepietroni.surfsy.views;
 import com.github.louiepietroni.surfsy.Location;
 import com.github.louiepietroni.surfsy.Surfsy;
 import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXSlider;
 import com.sothawo.mapjfx.Configuration;
 import com.sothawo.mapjfx.Coordinate;
 import com.sothawo.mapjfx.MapType;
@@ -204,7 +205,7 @@ public class LocationView {
 			// change scene to
 
 			var camButton = new JFXButton();
-			camButton.setPrefSize(30,20);
+			camButton.setPrefSize(30, 20);
 			camButton.getStyleClass().add("camera-button");
 			camButton.setOnAction(e -> Surfsy.getViewManager().setSceneToCameraView(location));
 
@@ -230,7 +231,7 @@ public class LocationView {
 
 			// Create the time of day slider
 			var tod_label = new Text();
-			var tod_slider = new Slider(0, 23.99, Calendar.getInstance().get(Calendar.HOUR_OF_DAY)
+			var tod_slider = new JFXSlider(0, 23.99, Calendar.getInstance().get(Calendar.HOUR_OF_DAY)
 					+ Calendar.getInstance().get(Calendar.MINUTE) / 60d);
 
 			tod_label.getStyleClass().add("p");
@@ -249,7 +250,7 @@ public class LocationView {
 
 				var w = location.getDataAtTime("Wind Direction", day, time);
 
-				return w-90;
+				return w - 90;
 			}, tod_slider.valueProperty()));
 
 			mapHolder.getStyleClass().add("border-pane");
