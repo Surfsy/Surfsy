@@ -10,6 +10,10 @@ import com.sothawo.mapjfx.MapType;
 
 import javafx.animation.RotateTransition;
 import javafx.beans.binding.Bindings;
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.css.PseudoClass;
 import javafx.geometry.Insets;
 import javafx.geometry.Point3D;
@@ -23,6 +27,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
+import javafx.scene.shape.Ellipse;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
@@ -34,6 +39,9 @@ import com.sothawo.mapjfx.MapView;
 import com.sothawo.mapjfx.Projection;
 import com.sothawo.mapjfx.offline.OfflineCache;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -67,7 +75,6 @@ public class LocationView {
 			return name;
 		}
 
-		public abstract void updateWidget();
 	}
 
 	/**
@@ -86,11 +93,6 @@ public class LocationView {
 			name = "Title";
 		}
 
-		@Override
-		public void updateWidget() {
-			// TODO Auto-generated method stub
-
-		}
 	}
 
 	/**
@@ -98,7 +100,7 @@ public class LocationView {
 	 */
 	class GraphWidget extends Widget {
 
-		private final XYChart.Series<Number, Number> series;
+		private final XYChart.Series<Number, Number> data_series;
 
 		/**
 		 * Create the view for a feature, with its name and graph
@@ -128,13 +130,14 @@ public class LocationView {
 			lineChart.setLegendVisible(false);
 
 			// defining a series
-			series = new XYChart.Series<>();
-			lineChart.getData().add(series);
+			data_series = new XYChart.Series<>();
+
+			lineChart.getData().add(data_series);
 
 			this.name = name;
 			// Init to blank graph
 			for (int i = 0; i < 24; i++) {
-				series.getData().add(new XYChart.Data<>(i, 0));
+				data_series.getData().add(new XYChart.Data<>(i, 0));
 			}
 
 			// Remove the tick marks
@@ -144,6 +147,20 @@ public class LocationView {
 			yAxis.setMinorTickVisible(false);
 
 			lineChart.setPrefSize(maxWidgetWidth, 100);
+
+			var currentValueText = new Text("0");
+
+			currentValueText.textProperty().bind(Bindings.createStringBinding(() -> {
+				return String.format(Location.GetFormatForFeature(name),
+						location.getDataAtTime(name, day.get(), time.get()));
+
+				// return String.format("%02d", location.getDataAtTime(name, day.get(),
+				// time.get()));
+			}, day, time));
+
+			currentValueText.getStyleClass().add("large-background-text");
+
+			var chartPane = new StackPane(currentValueText, lineChart);
 
 			// Create the panel that will hold all the widgets
 			var graphPanel = new BorderPane();
@@ -156,17 +173,18 @@ public class LocationView {
 
 			// Place the widgets in the panel
 			graphPanel.setTop(text);
-			graphPanel.setCenter(lineChart);
-		}
-
-		@Override
-		public void updateWidget() {
-			var data = location.getData(name, day);
+			graphPanel.setCenter(chartPane);
 
 			for (int i = 0; i < 24; i++) {
-				series.getData().get(i).YValueProperty().set(data.get(i));
-
+				final int hour = i;
+				data_series.getData().get(i).YValueProperty()
+						.bind(Bindings.createDoubleBinding(
+								() -> location.getData(name, day.get()).get(hour), day));
 			}
+			data_series.getNode().lookup(".chart-series-line").getStyleClass()
+					.add("chart-series-data-fill");
+
+			graphPanel.setEffect(ViewManager.GetDropShadow());
 
 		}
 	}
@@ -181,13 +199,22 @@ public class LocationView {
 			var mapView = new MapView();
 
 			final OfflineCache offlineCache = mapView.getOfflineCache();
-			final String cacheDir = System.getProperty("java.io.tmpdir") + "/mapjfx-cache";
+			final String cacheDir = System.getProperty("java.io.tmpdir") +
+					"/mapjfx-cache";
+			try {
+				Files.createDirectories(Paths.get(cacheDir));
+				offlineCache.setCacheDirectory(cacheDir);
+				offlineCache.setActive(true);
+			} catch (IOException e) {
+				System.err.println("could not activate offline cache");
+			}
+
 			// watch the MapView's initialized property to finish initialization
 			mapView.initializedProperty().addListener((observable, oldValue, newValue) -> {
 				if (newValue) {
 					mapView.setCenter(new Coordinate(location.getLatitude(), location.getLongitude()));
 					mapView.setZoom(15);
-					// mapView.setBingMapsApiKey("Ao6_AVBvLaiiXjCikwmox14Fp4m4yzayjvBJDUSq0-ZeXPhRCnj5ch1B1S0hQls2");
+					mapView.setBingMapsApiKey("Ao6_AVBvLaiiXjCikwmox14Fp4m4yzayjvBJDUSq0-ZeXPhRCnj5ch1B1S0hQls2");
 					mapView.setMapType(MapType.BINGMAPS_AERIAL);
 				}
 			});
@@ -198,9 +225,10 @@ public class LocationView {
 					.build());
 
 			// create the text
-			Text mapText = new Text();
-			mapText.getStyleClass().add("text");
-			mapText.textProperty().bind(Bindings.format("Map: %s", mapView.centerProperty()));
+			// Text mapText = new Text();
+			// mapText.getStyleClass().add("text");
+			// mapText.textProperty().bind(Bindings.format("Map: %s",
+			// mapView.centerProperty()));
 
 			// change scene to
 
@@ -217,56 +245,50 @@ public class LocationView {
 			StackPane.setAlignment(windArrow, Pos.TOP_LEFT);
 			windArrow.setPrefSize(40, 40);
 
+			VBox.setMargin(windArrow, new Insets(10));
+			VBox.setMargin(camButton, new Insets(10));
 			// RotateTransition rt = new RotateTransition(Duration.millis(3000), windArrow);
 			// rt.setByAngle(180);
 			// rt.setCycleCount(4);
 			// rt.setAutoReverse(true);
 			// rt.play();
+			var mapClip = new Rectangle();
+			// clipping pane show be the same size as the map, but with rounded corners
+			mapClip.widthProperty().bind(mapView.widthProperty());
+			mapClip.heightProperty().bind(mapView.heightProperty());
+			mapClip.setArcHeight(30);
+			mapClip.setArcWidth(30);
+
+			mapView.setClip(mapClip);
 
 			var mapLayers = new StackPane();
+
 			mapLayers.getChildren().addAll(mapView, new VBox(camButton, windArrow));
 
+			mapView.getStyleClass().add("map-pane");
+
 			// Add map to border pane
-			BorderPane.setMargin(mapLayers, new Insets(12, 12, 12, 12));
-
-			// Create the time of day slider
-			var tod_label = new Text();
-			var tod_slider = new JFXSlider(0, 23.99, Calendar.getInstance().get(Calendar.HOUR_OF_DAY)
-					+ Calendar.getInstance().get(Calendar.MINUTE) / 60d);
-
-			tod_label.getStyleClass().add("p");
-			tod_label.textProperty().bind(
-					Bindings.createStringBinding(() -> {
-						var time = tod_slider.getValue();
-
-						int hours = (int) time;
-						int minutes = (int) (60 * (time - hours));
-						return String.format("%02d:%02d", hours, minutes);
-					}, tod_slider.valueProperty()));
-			var tod = new HBox(tod_label, tod_slider);
+			BorderPane.setMargin(mapLayers, new Insets(6));
 
 			windArrow.rotateProperty().bind(Bindings.createDoubleBinding(() -> {
-				var time = tod_slider.getValue();
+				var t = time.get();
 
-				var w = location.getDataAtTime("Wind Direction", day, time);
+				var w = location.getDataAtTime(Location.WindDirection, day.get(), t);
 
 				return w - 90;
-			}, tod_slider.valueProperty()));
+			}, time, day));
 
 			mapHolder.getStyleClass().add("border-pane");
 			mapHolder.setMinSize(maxWidgetWidth, 240);
 			mapHolder.setMaxWidth(maxWidgetWidth);
-			mapHolder.setTop(mapText);
+			// mapHolder.setTop(mapText);
 			mapHolder.setCenter(mapLayers);
-			mapHolder.setBottom(tod);
 			rootNode = mapHolder;
-		}
 
-		@Override
-		public void updateWidget() {
-			// TODO Auto-generated method stub
+			mapHolder.setEffect(ViewManager.GetDropShadow());
 
 		}
+
 	}
 
 	private final Location location;
@@ -279,14 +301,16 @@ public class LocationView {
 	// needed
 	private final ScrollPane widgetScrollPane = new ScrollPane(scrollVBox);
 	// The daysHBox holds the day buttons along the bottom and the menu button
+	private final VBox timeOfDayBox = new VBox();
 	private final HBox daysHBox = new HBox();
 	// The outside VBox holds the scroll pane for the widgets and the daysHBox for
 	// the options along the bottom
-	private final VBox outsideVBox = new VBox(widgetScrollPane, daysHBox);
+	private final VBox outsideVBox = new VBox(widgetScrollPane, timeOfDayBox, daysHBox);
 	// The scene holds the whole view, inside it is the outside VBox
 	private final Scene scene = new Scene(outsideVBox, 350, 700);
 	// Keep track of the day we are showing data for, with 0 being today
-	private int day = 0;
+	private IntegerProperty day = new SimpleIntegerProperty(0);
+	private DoubleProperty time = new SimpleDoubleProperty(0);
 
 	// The button which will be pressed to change into edit mode
 	private JFXButton editFeatureButton;
@@ -308,6 +332,8 @@ public class LocationView {
 		// Create widgets and fill them with data
 		generateWidgets();
 
+		// Create the slider to change the time of day
+		addTimeOfDaySlider();
 		// Create day buttons
 		addDayButtons();
 
@@ -335,8 +361,6 @@ public class LocationView {
 			widgetVBox.getChildren().add(widget.getNode());
 		}
 
-		updateWidgets();
-
 		// Create edit feature button
 		addEditFeatureButton();
 
@@ -347,10 +371,10 @@ public class LocationView {
 		widgetScrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
 		widgetScrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
 		widgetScrollPane.setBorder(Border.EMPTY);
-		widgetScrollPane.setMinSize(352, 658);
+		// widgetScrollPane.setMinSize(352, 658);
 
 		// Set up the widget vBox
-		widgetVBox.setSpacing(5);
+		widgetVBox.setSpacing(15);
 		widgetVBox.setAlignment(Pos.CENTER);
 		widgetVBox.setPadding(new Insets(0, 0, 5, 0));
 		widgetVBox.getChildren().clear();
@@ -364,7 +388,7 @@ public class LocationView {
 		scrollVBox.setAlignment(Pos.CENTER);
 
 		// Set up the outside vBox
-		outsideVBox.setMinSize(350, 700);
+		// outsideVBox.setMinSize(350, 700);
 		outsideVBox.setAlignment(Pos.CENTER);
 	}
 
@@ -418,9 +442,46 @@ public class LocationView {
 		return dayButton;
 	}
 
+	private void addTimeOfDaySlider() {
+
+		var tod_label = new Text();
+		tod_label.getStyleClass().add("p");
+
+		tod_label.textProperty().bind(
+				Bindings.createStringBinding(() -> {
+					var t = time.get();
+
+					int hours = (int) t;
+					int minutes = (int) (60 * (t - hours));
+					return String.format("%02d:%02d", hours, minutes);
+				}, time));
+
+		// Create the time of day slider
+		var tod_slider = new JFXSlider(0, 23.99, Calendar.getInstance().get(Calendar.HOUR_OF_DAY)
+				+ Calendar.getInstance().get(Calendar.MINUTE) / 60d);
+
+		tod_slider.setMinHeight(30);
+		tod_slider.setPickOnBounds(true);
+		VBox.setMargin(tod_slider, new Insets(0, 20, 0, 20));
+
+		tod_slider.setValueFactory(s -> Bindings.createStringBinding(() -> {
+			var t = time.get();
+
+			int hours = (int) t;
+			int minutes = (int) (60 * (t - hours));
+			return String.format("%02d:%02d", hours, minutes);
+		}, s.valueProperty()));
+
+		timeOfDayBox.getChildren().setAll(tod_slider);
+
+		time.bind(Bindings.createDoubleBinding(() -> {
+			return tod_slider.getValue();
+		}, tod_slider.valueProperty()));
+	}
+
 	private void addMenuButton() {
 		// Add the menu button to the daysHBox
-		// TODO: Style the menu button
+		// Style the menu button
 		StackPane menuButton = new StackPane();
 		menuButton.setMinSize(56, 42);
 		menuButton.getStyleClass().add("menu-button");
@@ -457,7 +518,7 @@ public class LocationView {
 
 	private RadioButton createEditListButton(String feature, boolean selected) {
 		// Create a radio button for the feature
-		// TODO: Style this radio button as desired
+		// Style this radio button as desired
 		RadioButton editListButton = new RadioButton(feature);
 		editListButton.setSelected(selected);
 		return editListButton;
@@ -530,18 +591,11 @@ public class LocationView {
 		// generateWidgets();
 	}
 
-	private void updateWidgets() {
-		for (Widget widget : activeWidgets) {
-			widget.updateWidget();
-		}
-	}
-
 	private void updateDay(int day) {
 		// Update the day, change the selected day button, then call
 		// updateLocationFeatures to redraw the updated features
-		this.day = day;
+		this.day.set(day);
 		updateDayButtons(day);
-		updateWidgets();
 	}
 
 	private void updateDayButtons(int day) {

@@ -7,6 +7,8 @@ import java.util.Map;
 import com.github.louiepietroni.surfsy.Location;
 import com.jfoenix.controls.JFXButton;
 
+import javafx.scene.effect.DropShadow;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
@@ -25,12 +27,24 @@ public class ViewManager {
 	private final Map<Location, CameraView> cameraViews = new HashMap<>();
 
 	private String defaultTheme = "sunset.css";
+	private static final DropShadow dropShadow;
+
+	static {
+		dropShadow = new DropShadow();
+		dropShadow.setRadius(5.0);
+		dropShadow.setOffsetX(3.0);
+		dropShadow.setOffsetY(3.0);
+		dropShadow.setColor(Color.color(0, 0, 0, 0.3));
+	}
 
 	public ViewManager(Stage primaryStage) {
+		// Setup common components
+
 		// Set up the main viewing window
 		this.primaryStage = primaryStage;
 		primaryStage.setTitle("Surfsy");
 		primaryStage.setResizable(false);
+
 	}
 
 	public void initializeViews() {
@@ -43,6 +57,10 @@ public class ViewManager {
 
 		// Show the primary stage
 		primaryStage.show();
+	}
+
+	public static DropShadow GetDropShadow() {
+		return dropShadow;
 	}
 
 	public static JFXButton createButton(String name) {

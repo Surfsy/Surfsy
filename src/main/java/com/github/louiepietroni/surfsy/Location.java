@@ -11,10 +11,55 @@ import java.nio.file.Paths;
 import java.util.*;
 
 public class Location {
+	public static final String WindSpeed = "Wind Speed",
+			WindDirection = "Wind Direction",
+			WaveHeight = "Wave Height",
+			WavePeriod = "Wave Period",
+			AirTemperature = "Air Temperature",
+			SeaLevel = "Sea Level",
+			WaterTemperature = "Water Temperature",
+			CloudCover = "Cloud Cover",
+			CurrentDirection = "Current Direction", // TODO: What does this mean?
+			CurrentSpeed = "Current Speed", // TODO: What does this mean?
+			Precipitation = "Precipitation",
+			Visibility = "Visibility",
+			WaveDirection = "Wave Direction";
 	// List of all possible weather features for the API
-	private static final List<String> allWeatherFeatures = Arrays.asList("Wind Speed", "Wind Direction", "Wave Height",
-			"Wave Period", "Air Temperature", "Sea Level", "Water Temperature", "Cloud Cover", "Current Direction",
-			"Current Speed", "Precipitation", "Visibility", "Wave Direction");
+	private static final List<String> allWeatherFeatures = Arrays.asList(WindSpeed, WindDirection, WaveHeight,
+			WavePeriod, AirTemperature, SeaLevel, WaterTemperature, CloudCover, CurrentDirection,
+			CurrentSpeed, Precipitation, Visibility, WaveDirection);
+
+	private static final Map<String, String> allWeatherFormats;
+
+	static {
+		allWeatherFormats = new HashMap<>();
+
+		for (String f : List.of(WaveHeight, SeaLevel)) {
+			allWeatherFormats.put(f, "%.02fm");
+		}
+
+		for (String f : List.of(CurrentSpeed, WindSpeed)) {
+			allWeatherFormats.put(f, "%.02fm/s");
+		}
+
+		for (String f : List.of(WaterTemperature, AirTemperature)) {
+			allWeatherFormats.put(f, "%.02f°C");
+		}
+
+		for (String f : List.of(WaveDirection, WindDirection, CurrentDirection)) {
+			allWeatherFormats.put(f, "%.02f°");
+		}
+
+		// IDK what these units are supposed to be
+		for (String f : List.of(Precipitation, Visibility, CloudCover, WavePeriod)) {
+			allWeatherFormats.put(f, "%.02f");
+		}
+
+	}
+
+	public static String GetFormatForFeature(String feature) {
+		return allWeatherFormats.get(feature);
+	}
 
 	private final double latitude;
 	private final double longitude;
@@ -55,7 +100,8 @@ public class Location {
 			return weatherData.get(convertFeatureNameForAPI(feature)).get(24 * day + 23);
 		}
 		int hour_before = (int) Math.floor(time);
-		List<Double> two_hours = weatherData.get(convertFeatureNameForAPI(feature)).subList(24 * day + hour_before, 24 * day + hour_before + 2);
+		List<Double> two_hours = weatherData.get(convertFeatureNameForAPI(feature)).subList(24 * day + hour_before,
+				24 * day + hour_before + 2);
 		double proportion = time % 1;
 		return (two_hours.get(1) - two_hours.get(0)) * proportion + two_hours.get(0);
 	}
@@ -133,55 +179,59 @@ public class Location {
 		return feature.substring(0, 1).toLowerCase() + feature.substring(1).replaceAll("\\s+", "");
 	}
 
-	public static ArrayList<Location> loadFromFile(String filename){
-		//"src/main/java/com/github/louiepietroni/surfsy/locations.json"
+	public static ArrayList<Location> loadFromFile(String filename) {
+		// "src/main/java/com/github/louiepietroni/surfsy/locations.json"
 		try {
-		JSONParser parser = new JSONParser();
-		ArrayList<Location> locations = new ArrayList<>();
-		FileReader r = new FileReader(String.format("src/main/resources/%s",filename));
+			JSONParser parser = new JSONParser();
+			ArrayList<Location> locations = new ArrayList<>();
+			FileReader r = new FileReader(String.format("src/main/resources/%s", filename));
 			Object ob = parser.parse(r);
 			JSONArray ja = (JSONArray) ob;
 			for (Object o : ja) {
 				JSONObject jo = (JSONObject) o;
-				Location loc = new Location((double) jo.get("latitude"), (double) jo.get("longitude"), (String) jo.get("name"));
+				Location loc = new Location((double) jo.get("latitude"), (double) jo.get("longitude"),
+						(String) jo.get("name"));
 				locations.add(loc);
 			}
 
-		return locations;
+			return locations;
 		} catch (IOException e) {
-			throw new RuntimeException("Reader Exception, location loading",e);
+			throw new RuntimeException("Reader Exception, location loading", e);
 		} catch (ParseException e) {
-			throw new RuntimeException("Parse Exception, location loading",e);
+			throw new RuntimeException("Parse Exception, location loading", e);
 		}
 	}
+
 	public static void addToFile(Location location, String filename) {
-		try {
-		ArrayList<Location> locations = loadFromFile(filename);
-		locations.add(location);
-		JSONArray jsonArray = new JSONArray();
-		for (Location l : locations){
-			JSONObject lj = new JSONObject();
-			lj.put("latitude",l.getLatitude());
-			lj.put("longitude",l.getLongitude());
-			lj.put("name",l.getName());
-			jsonArray.add(lj);
-		}
-		FileWriter w = new FileWriter(String.format("src/main/resources/%s",filename));
-			w.write(jsonArray.toJSONString());
-			w.flush();
-
-		} catch (IOException e) {
-			throw new RuntimeException("IO Exception, location appending",e);
-		}
-
-	}
-	public static void removeFromFile(Location location, String filename){
 		try {
 			ArrayList<Location> locations = loadFromFile(filename);
 			locations.add(location);
 			JSONArray jsonArray = new JSONArray();
-			for (Location l : locations){
-				if (!(l.getName().equals(location.getName())&&l.getLongitude()==location.getLongitude()&&l.getLatitude()==location.getLatitude())) {
+			for (Location l : locations) {
+				JSONObject lj = new JSONObject();
+				lj.put("latitude", l.getLatitude());
+				lj.put("longitude", l.getLongitude());
+				lj.put("name", l.getName());
+				jsonArray.add(lj);
+			}
+			FileWriter w = new FileWriter(String.format("src/main/resources/%s", filename));
+			w.write(jsonArray.toJSONString());
+			w.flush();
+
+		} catch (IOException e) {
+			throw new RuntimeException("IO Exception, location appending", e);
+		}
+
+	}
+
+	public static void removeFromFile(Location location, String filename) {
+		try {
+			ArrayList<Location> locations = loadFromFile(filename);
+			locations.add(location);
+			JSONArray jsonArray = new JSONArray();
+			for (Location l : locations) {
+				if (!(l.getName().equals(location.getName()) && l.getLongitude() == location.getLongitude()
+						&& l.getLatitude() == location.getLatitude())) {
 					JSONObject lj = new JSONObject();
 					lj.put("latitude", l.getLatitude());
 					lj.put("longitude", l.getLongitude());
@@ -189,12 +239,12 @@ public class Location {
 					jsonArray.add(lj);
 				}
 			}
-			FileWriter w = new FileWriter(String.format("src/main/resources/%s",filename));
+			FileWriter w = new FileWriter(String.format("src/main/resources/%s", filename));
 			w.write(jsonArray.toJSONString());
 			w.flush();
 
 		} catch (IOException e) {
-			throw new RuntimeException("IO Exception, location appending",e);
+			throw new RuntimeException("IO Exception, location appending", e);
 		}
 	}
 }

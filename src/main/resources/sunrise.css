@@ -1,13 +1,14 @@
 @import "styles.css";
 
 * {
-	-fx-main-bg-color: #FFFFFF;
+	-fx-main-bg-color: #ebebeb;
 	-fx-button-color: #E88591;
 	-fx-highlight-color: #F8BBA3;
-	-fx-color3: #FFC99F;
+	-fx-light-focus: #506C8A;
 	-fx-text-color: #464E56;
-	-fx-color3: #506C8A;
+	-fx-dark-focus: #FFC99F;
 	-fx-radio-button-dot-color: #5C7EA5;
 	-fx-widget-bg-color: #C6CDD8;
+	-fx-widget-bg-text-color: #a0a5ad;
 	-fx-day-button-color: #7C8995;
 }

@@ -8,6 +8,7 @@ import com.jfoenix.controls.JFXHamburger;
 import com.jfoenix.controls.JFXNodesList;
 import com.jfoenix.controls.JFXPopup;
 import com.jfoenix.controls.JFXRippler;
+import com.jfoenix.controls.JFXButton.ButtonType;
 import com.jfoenix.controls.JFXPopup.PopupHPosition;
 import com.jfoenix.controls.JFXPopup.PopupVPosition;
 import com.jfoenix.controls.JFXRippler.RipplerMask;
@@ -83,7 +84,7 @@ public class FavouritesView {
 		favouritesScrollPane.setStyle("-fx-padding: 0");
 
 		// Setup the favourites vBox
-		favouritesVBox.setSpacing(5);
+		favouritesVBox.setSpacing(15);
 		favouritesVBox.setAlignment(Pos.TOP_CENTER);
 		favouritesVBox.setMinSize(350, Math.max(125 * favourites.size() + 100, 630));
 
@@ -165,6 +166,7 @@ public class FavouritesView {
 		dialogue_confirm.setOnAction(e -> {
 			deleteLocation(location);
 		});
+
 		dialogue_cancel.setOnAction(e -> {
 			dialog.close();
 		});
@@ -184,7 +186,7 @@ public class FavouritesView {
 		}
 
 		var locationSummary = new JFXButton(location.getName(), button);
-
+		locationSummary.setButtonType(ButtonType.RAISED);
 		locationSummary.getStyleClass().addAll("widget-favourite-button", "widget-labelled");
 		locationSummary.setPrefSize(330, 120);
 		locationSummary.setAlignment(Pos.BASELINE_LEFT);
