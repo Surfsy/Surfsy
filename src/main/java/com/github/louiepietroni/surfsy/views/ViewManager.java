@@ -26,7 +26,7 @@ public class ViewManager {
 	private final Map<Location, LocationView> locationViews = new HashMap<>();
 	private final Map<Location, CameraView> cameraViews = new HashMap<>();
 
-	private String defaultTheme = "sunset.css";
+	private String defaultTheme = "sunrise.css";
 	private static final DropShadow dropShadow;
 
 	static {
@@ -53,7 +53,7 @@ public class ViewManager {
 		loadLocations();
 
 		// This will create a location view for the first location and show its scene
-		setSceneToLocationView(locations.get(0));
+		setSceneToFavouritesView();
 
 		// Show the primary stage
 		primaryStage.show();

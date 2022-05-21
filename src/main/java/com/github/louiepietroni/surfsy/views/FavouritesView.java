@@ -225,7 +225,11 @@ public class FavouritesView {
 		themeButton = new JFXButton();
 		themeButton.getStyleClass().add("theme-button");
 		themeButton.setPrefSize(45, 45);
-		themeButton.setOnAction(e -> changeThemeToSunrise());
+		if (Surfsy.getViewManager().getDefaultTheme() == "sunset.css") {
+			themeButton.setOnAction(e -> changeThemeToSunrise());
+		} else {
+			themeButton.setOnAction(e -> changeThemeToSunset());
+		}
 
 		themeButtonBox.setCenter(themeButton);
 		HBox themeButtonRightBuffer = new HBox();
