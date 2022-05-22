@@ -141,11 +141,8 @@ public class FavouritesView {
 		HBox.setHgrow(spacer1, Priority.ALWAYS);
 		HBox.setHgrow(spacer2, Priority.ALWAYS);
 
-		var dialogue_confirm = ViewManager.createButton("Yes");
-		var dialogue_cancel = ViewManager.createButton("No");
-
-		dialogue_confirm.setPrefSize(60, 40);
-		dialogue_cancel.setPrefSize(60, 40);
+		var dialogue_confirm = ViewManager.createButton("Confirm");
+		var dialogue_cancel = ViewManager.createButton("Cancel");
 
 		var dialogue_buttons = new HBox(spacer0, dialogue_confirm, spacer1, dialogue_cancel, spacer2);
 

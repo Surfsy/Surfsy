@@ -66,6 +66,7 @@ public class ViewManager {
 	public static JFXButton createButton(String name) {
 		var n = new JFXButton(name);
 		n.getStyleClass().addAll("plus-button", "widget-labelled");
+		n.setPrefHeight(40);
 		return n;
 	}
 

@@ -76,7 +76,7 @@ public class Location {
 		this.longitude = longitude;
 		this.name = name;
 		this.weatherFeatures = new ArrayList<>(
-				Arrays.asList("Wind Speed", "Wave Height", "Water Temperature", "Wind Direction"));
+				Arrays.asList(WindSpeed, SeaLevel, WaterTemperature));
 		this.weatherData = APIHandler.fetchLocation(latitude, longitude);
 	}
 

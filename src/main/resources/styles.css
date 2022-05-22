@@ -128,6 +128,11 @@
 	-fx-background-color: -fx-light-focus;
 }
 
+.jfx-check-box {
+	-jfx-checked-color: -fx-button-color;
+	-jfx-unchecked-color: -fx-day-button-color;
+}
+
 /* Styling the slider thumb */
 .jfx-slider>.thumb {
 	-fx-background-color: -fx-day-button-color;

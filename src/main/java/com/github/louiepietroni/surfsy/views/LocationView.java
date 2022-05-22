@@ -3,6 +3,8 @@ package com.github.louiepietroni.surfsy.views;
 import com.github.louiepietroni.surfsy.Location;
 import com.github.louiepietroni.surfsy.Surfsy;
 import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXCheckBox;
+import com.jfoenix.controls.JFXDialog;
 import com.jfoenix.controls.JFXSlider;
 import com.sothawo.mapjfx.Configuration;
 import com.sothawo.mapjfx.Coordinate;
@@ -10,10 +12,13 @@ import com.sothawo.mapjfx.MapType;
 
 import javafx.animation.RotateTransition;
 import javafx.beans.binding.Bindings;
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.css.PseudoClass;
 import javafx.geometry.Insets;
 import javafx.geometry.Point3D;
@@ -87,9 +92,28 @@ public class LocationView {
 			Text text = new Text(location.getName());
 			text.getStyleClass().add("text");
 			text.getStyleClass().add("h1");
-			text.setWrappingWidth(350);
+
+			text.wrappingWidthProperty()
+					.bind(Bindings.createDoubleBinding(
+							() -> widgetScrollPane.getViewportBounds().getWidth() - 50,
+							widgetScrollPane.viewportBoundsProperty()));
+
 			text.setTextAlignment(TextAlignment.CENTER);
-			rootNode = text;
+
+			var edit = ViewManager.createButton("\u2699");
+
+			bindEditFeatureButton(edit);
+
+			var row = new BorderPane(text);
+			BorderPane.setAlignment(edit, Pos.CENTER);
+			row.setPadding(new Insets(5));
+			row.maxWidthProperty()
+					.bind(Bindings.createDoubleBinding(() -> widgetScrollPane.getViewportBounds().getWidth(),
+							widgetScrollPane.viewportBoundsProperty()));
+
+			row.setRight(edit);
+
+			rootNode = row;
 			name = "Title";
 		}
 
@@ -306,23 +330,18 @@ public class LocationView {
 	// The outside VBox holds the scroll pane for the widgets and the daysHBox for
 	// the options along the bottom
 	private final VBox outsideVBox = new VBox(widgetScrollPane, timeOfDayBox, daysHBox);
+	// Root stack, for popup dialogues
+	private final StackPane rootStack = new StackPane(outsideVBox);
 	// The scene holds the whole view, inside it is the outside VBox
-	private final Scene scene = new Scene(outsideVBox, 350, 700);
+	private final Scene scene = new Scene(rootStack, 350, 700);
 	// Keep track of the day we are showing data for, with 0 being today
 	private IntegerProperty day = new SimpleIntegerProperty(0);
 	private DoubleProperty time = new SimpleDoubleProperty(0);
-
-	// The button which will be pressed to change into edit mode
-	private JFXButton editFeatureButton;
 
 	/**
 	 * Every widget currently on screen
 	 */
 	private List<Widget> activeWidgets;
-
-	// The Vbox which will contain all the toggles for showing features and will be
-	// shown when in edit mode
-	private final VBox editListVBox = new VBox();
 
 	public LocationView(Location location) {
 		scene.getStylesheets().clear();
@@ -340,8 +359,6 @@ public class LocationView {
 		// Create menu button
 		addMenuButton();
 
-		// Create edit list view
-		createEditListView();
 	}
 
 	/**
@@ -361,9 +378,6 @@ public class LocationView {
 			widgetVBox.getChildren().add(widget.getNode());
 		}
 
-		// Create edit feature button
-		addEditFeatureButton();
-
 	}
 
 	private void configureViews() {
@@ -371,17 +385,21 @@ public class LocationView {
 		widgetScrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
 		widgetScrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
 		widgetScrollPane.setBorder(Border.EMPTY);
+		widgetScrollPane.setFitToWidth(true);
+
+		final double SPEED = 0.005;
+		widgetScrollPane.getContent().setOnScroll(scrollEvent -> {
+			double deltaY = scrollEvent.getDeltaY() * SPEED;
+			widgetScrollPane.setVvalue(widgetScrollPane.getVvalue() - deltaY);
+		});
+
 		// widgetScrollPane.setMinSize(352, 658);
 
 		// Set up the widget vBox
 		widgetVBox.setSpacing(15);
 		widgetVBox.setAlignment(Pos.CENTER);
-		widgetVBox.setPadding(new Insets(0, 0, 5, 0));
+		// widgetVBox.setPadding(new Insets(7));
 		widgetVBox.getChildren().clear();
-
-		// Set up the edit list vBox
-		editListVBox.setPadding(new Insets(0, 0, 0, 50));
-		editListVBox.setSpacing(4);
 
 		// Scroll box is the thing being scrolled, contains all widgets + the edit
 		// button
@@ -390,6 +408,8 @@ public class LocationView {
 		// Set up the outside vBox
 		// outsideVBox.setMinSize(350, 700);
 		outsideVBox.setAlignment(Pos.CENTER);
+
+		// rootStack.setAlignment(Pos.CENTER);
 	}
 
 	/**
@@ -494,53 +514,56 @@ public class LocationView {
 		daysHBox.getChildren().add(menuButton);
 	}
 
-	private void addEditFeatureButton() {
+	public void bindEditFeatureButton(Button editFeatureButton) {
 		// Add the edit button which appears below the features and starts edit mode
-		editFeatureButton = new JFXButton();
-		editFeatureButton.setButtonType(JFXButton.ButtonType.RAISED);
-		editFeatureButton.getStyleClass().add("edit-button");
-		editFeatureButton.setMaxSize(100, 24);
-		editFeatureButton.setOnAction(e -> enterEditMode());
-		editFeatureButton.setText("Edit widgets");
 
-		scrollVBox.getChildren().add(editFeatureButton);
-	}
+		final var editPopup = new JFXDialog();
+		// The Vbox which will contain all the toggles for showing features and will be
+		// shown when in edit mode
+		final var editListVBox = new VBox();
 
-	private void createEditListView() {
+		// Set up the edit list vBox
+		editListVBox.setPadding(new Insets(20));
+		editListVBox.setSpacing(10);
+		editListVBox.getStyleClass().add("border-pane");
+
+		var settings = new HashMap<String, BooleanProperty>();
+
 		// Create the radioButtons which will be used to toggle features and are stored
 		// in the editListVBox
 		for (String possibleFeature : Location.getAllWeatherFeatures()) {
 			boolean selected = location.getWeatherFeatures().contains(possibleFeature);
-			RadioButton editListButton = createEditListButton(possibleFeature, selected);
+
+			var editListButton = new JFXCheckBox(possibleFeature);
+			editListButton.setSelected(selected);
+			settings.put(possibleFeature, editListButton.selectedProperty());
+
 			editListVBox.getChildren().add(editListButton);
 		}
+		// setup buttons to save changes and remove the popup box
+		var yes = ViewManager.createButton("Confirm");
+		yes.setOnAction(e -> {
+			saveEditListToLocation(settings);
+			editPopup.close();
+		});
+		var no = ViewManager.createButton("Cancel");
+		no.setOnAction(e -> editPopup.close());
+		// Configure the row for the two yes/no buttons
+		// - want roughly even spacing across popup
+		// - fake this by making the popup have to expand to fit the row
+		var buttonRow = new HBox(yes, no);
+		buttonRow.setSpacing(20);
+		editListVBox.getChildren().add(buttonRow);
+
+		editPopup.setContent(editListVBox);
+
+		editFeatureButton.setOnAction(e -> editPopup.show(rootStack));
+		// remove the default white background
+		((StackPane) editListVBox.getParent()).setBackground(null);
+
 	}
 
-	private RadioButton createEditListButton(String feature, boolean selected) {
-		// Create a radio button for the feature
-		// Style this radio button as desired
-		RadioButton editListButton = new RadioButton(feature);
-		editListButton.setSelected(selected);
-		return editListButton;
-	}
-
-	private void enterEditMode() {
-		// Called by the edit button, shows the editVBox which includes all the toggles
-		scrollVBox.getChildren().add(editListVBox);
-		editFeatureButton.setOnAction(e -> exitEditMode());
-		editFeatureButton.setText("Confirm");
-	}
-
-	private void exitEditMode() {
-		// Called by the edit button when in edit mode to exit edit mode
-		scrollVBox.getChildren().remove(editListVBox);
-		editFeatureButton.setOnAction(e -> enterEditMode());
-		editFeatureButton.setText("Edit widgets");
-
-		saveEditListToLocation();
-	}
-
-	private void saveEditListToLocation() {
+	private void saveEditListToLocation(Map<String, BooleanProperty> editedSettings) {
 		var old_features = new HashSet<>(location.getWeatherFeatures());
 
 		var to_remove = new HashSet<String>();
@@ -548,10 +571,8 @@ public class LocationView {
 
 		// Take the data from the radio buttons and update the location with the new
 		// features, then save the location to file
-		for (Node editListItem : editListVBox.getChildren()) {
-			RadioButton editListButton = (RadioButton) editListItem;
-			String feature = editListButton.getText();
-			boolean selected = editListButton.isSelected();
+		for (String feature : editedSettings.keySet()) {
+			boolean selected = editedSettings.get(feature).get();
 
 			if (selected && !old_features.contains(feature)) {
 				to_add.add(feature);
