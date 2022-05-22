@@ -27,6 +27,7 @@ public class AddSuggestedView {
 
     public AddSuggestedView(){
         this.suggested = Location.loadFromFile("suggestedLocations.json");
+        System.out.println(suggested);
         navButtons.setMinSize(350,60);
         navButtons.setSpacing(5);
         configureScrollPane();

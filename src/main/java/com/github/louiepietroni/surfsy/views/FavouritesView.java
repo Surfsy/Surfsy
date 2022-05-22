@@ -222,7 +222,7 @@ public class FavouritesView {
 		themeButton = new JFXButton();
 		themeButton.getStyleClass().add("theme-button");
 		themeButton.setPrefSize(45, 45);
-		if (Surfsy.getViewManager().getDefaultTheme() == "sunset.css") {
+		if (Objects.equals(Surfsy.getViewManager().getDefaultTheme(), "sunset.css")) {
 			themeButton.setOnAction(e -> changeThemeToSunrise());
 		} else {
 			themeButton.setOnAction(e -> changeThemeToSunset());
@@ -247,8 +247,13 @@ public class FavouritesView {
 		Scene scene = Surfsy.getViewManager().getFavouritesView().getScene();
 		scene.getStylesheets().clear();
 		scene.getStylesheets().add("sunrise.css");
-		for (LocationView lview : Surfsy.getViewManager().getLocationViews().values()) {
-			scene = lview.getScene();
+		for (LocationView view : Surfsy.getViewManager().getLocationViews().values()) {
+			scene = view.getScene();
+			scene.getStylesheets().clear();
+			scene.getStylesheets().add("sunrise.css");
+		}
+		for (CameraView view : Surfsy.getViewManager().getCameraViews().values()) {
+			scene = view.getScene();
 			scene.getStylesheets().clear();
 			scene.getStylesheets().add("sunrise.css");
 		}
@@ -263,6 +268,11 @@ public class FavouritesView {
 		scene.getStylesheets().add("sunset.css");
 		for (LocationView lview : Surfsy.getViewManager().getLocationViews().values()) {
 			scene = lview.getScene();
+			scene.getStylesheets().clear();
+			scene.getStylesheets().add("sunset.css");
+		}
+		for (CameraView view : Surfsy.getViewManager().getCameraViews().values()) {
+			scene = view.getScene();
 			scene.getStylesheets().clear();
 			scene.getStylesheets().add("sunset.css");
 		}

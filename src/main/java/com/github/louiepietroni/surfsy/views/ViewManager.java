@@ -1,5 +1,9 @@
 package com.github.louiepietroni.surfsy.views;
 
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,6 +15,10 @@ import javafx.scene.effect.DropShadow;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 public class ViewManager {
 
@@ -26,7 +34,7 @@ public class ViewManager {
 	private final Map<Location, LocationView> locationViews = new HashMap<>();
 	private final Map<Location, CameraView> cameraViews = new HashMap<>();
 
-	private String defaultTheme = "sunrise.css";
+	private String defaultTheme = "sunset.css";
 	private static final DropShadow dropShadow;
 
 	static {
@@ -45,6 +53,37 @@ public class ViewManager {
 		primaryStage.setTitle("Surfsy");
 		primaryStage.setResizable(false);
 
+		loadDefaults("defaults.json");
+
+	}
+
+	private void loadDefaults(String filename) {
+		try {
+			JSONParser parser = new JSONParser();
+			FileReader r = new FileReader(String.format("src/main/resources/%s", filename));
+			JSONObject jo = (JSONObject) parser.parse(r);
+			defaultTheme = (String) jo.get("theme");
+		} catch (IOException e) {
+			throw new RuntimeException("Reader Exception on loading default settings", e);
+		} catch (ParseException e) {
+			throw new RuntimeException("Parse Exception on loading default settings", e);
+		}
+	}
+
+	private void setDefaultValue(String filename, String object, Object value){
+		try {
+			JSONParser parser = new JSONParser();
+			FileReader r = new FileReader(String.format("src/main/resources/%s", filename));
+			JSONObject jo = (JSONObject) parser.parse(r);
+			jo.put(object,value);
+			FileWriter w = new FileWriter(String.format("src/main/resources/%s", filename));
+			w.write(jo.toJSONString());
+			w.flush();
+		} catch (IOException e) {
+			throw new RuntimeException("IO Exception on changing default settings", e);
+		} catch (ParseException e) {
+			throw new RuntimeException("Parse Exception on changing default settings", e);
+		}
 	}
 
 	public void initializeViews() {
@@ -94,6 +133,7 @@ public class ViewManager {
 
 	protected void setDefaultTheme(String theme) {
 		defaultTheme = theme;
+		setDefaultValue("defaults.json", "theme", theme);
 	}
 
 	private void loadLocations() {
@@ -160,7 +200,6 @@ public class ViewManager {
 		if (addSuggestedView == null) {
 			createAddSuggestedView();
 		}
-		System.out.println("Here");
 		primaryStage.setScene(addSuggestedView.getScene());
 
 		// TODO: create scene
