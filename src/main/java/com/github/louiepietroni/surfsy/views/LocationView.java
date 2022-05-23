@@ -584,7 +584,6 @@ public class LocationView {
 		}
 		location.saveLocation();
 
-		System.out.println("Removing " + to_remove);
 		// Remove all unused widgets
 		for (var n : to_remove) {
 			Widget r = null;
@@ -605,8 +604,6 @@ public class LocationView {
 			widgetVBox.getChildren().add(w.getNode());
 
 		}
-
-		System.out.println("Adding " + to_add);
 
 		// use this new location info to regenerate widgets
 		// generateWidgets();
