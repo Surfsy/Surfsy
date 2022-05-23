@@ -8,6 +8,10 @@ import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.layout.*;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.concurrent.ThreadLocalRandom;
+
 public class CameraView {
     private final Location location;
     private final HBox cameraContainer = new HBox();
@@ -18,11 +22,12 @@ public class CameraView {
 
     private final Scene scene = new Scene(BigBox,350,700);
 
+    private static ArrayList<String> filenames = new ArrayList<>();
+
     public CameraView(Location location){
         this.location = location;
         scene.getStylesheets().clear();
         scene.getStylesheets().add(Surfsy.getViewManager().getDefaultTheme());
-
 
         setImage();
 
@@ -33,9 +38,17 @@ public class CameraView {
         return scene;
     }
 
+    public static void loadImages(){
+        File[] files = new File("src/main/resources/camera-images").listFiles();
+        for (File f:files) {
+            filenames.add(f.getName());
+        }
+    }
+
+
     private void setImage(){
         cameraContainer.setPrefSize(350,640);
-        cameraContainer.setStyle("-fx-background-image: url(camera-images/beach1.png)");
+        cameraContainer.setStyle(String.format("-fx-background-image: url(camera-images/%s)", filenames.get(ThreadLocalRandom.current().nextInt(0, filenames.size()))));
     }
 
     private void addBackButton(){

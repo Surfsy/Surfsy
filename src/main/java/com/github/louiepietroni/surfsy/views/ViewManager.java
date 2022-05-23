@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.*;
 
 import com.github.louiepietroni.surfsy.Location;
+import com.github.louiepietroni.surfsy.Surfsy;
 import com.jfoenix.controls.JFXButton;
 
 import javafx.scene.effect.DropShadow;
@@ -53,6 +54,8 @@ public class ViewManager {
 		primaryStage.setResizable(false);
 
 		loadDefaults("defaults.json");
+
+		CameraView.loadImages();
 
 	}
 
