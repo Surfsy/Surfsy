@@ -3,10 +3,7 @@ package com.github.louiepietroni.surfsy.views;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import com.github.louiepietroni.surfsy.Location;
 import com.jfoenix.controls.JFXButton;
@@ -35,6 +32,8 @@ public class ViewManager {
 	private final Map<Location, CameraView> cameraViews = new HashMap<>();
 
 	private String defaultTheme = "sunset.css";
+	private String defaultPage = "favourites";
+	private String defaultPageName = "null";
 	private static final DropShadow dropShadow;
 
 	static {
@@ -63,6 +62,9 @@ public class ViewManager {
 			FileReader r = new FileReader(String.format("src/main/resources/%s", filename));
 			JSONObject jo = (JSONObject) parser.parse(r);
 			defaultTheme = (String) jo.get("theme");
+			JSONObject page = (JSONObject) jo.get("page");
+			defaultPage = (String) page.get("type");
+			defaultPageName = (String) page.get("name");
 		} catch (IOException e) {
 			throw new RuntimeException("Reader Exception on loading default settings", e);
 		} catch (ParseException e) {
@@ -70,7 +72,8 @@ public class ViewManager {
 		}
 	}
 
-	private void setDefaultValue(String filename, String object, Object value){
+	private void setDefaultValue(String object, Object value){
+		String filename = "defaults.json";
 		try {
 			JSONParser parser = new JSONParser();
 			FileReader r = new FileReader(String.format("src/main/resources/%s", filename));
@@ -92,7 +95,27 @@ public class ViewManager {
 		loadLocations();
 
 		// This will create a location view for the first location and show its scene
-		setSceneToFavouritesView();
+		if (Objects.equals(defaultPage, "favourites")){
+			setSceneToFavouritesView();
+		}
+		else {
+			try{
+				boolean found = false;
+				for (Location location: locations){
+					if (Objects.equals(location.getName(), defaultPageName)) {
+						found = true;
+						setSceneToLocationView(location);
+						break;
+					}
+				}
+				if (!found) {
+					setSceneToFavouritesView();
+				}
+			} catch (Exception e) {
+				setSceneToFavouritesView();
+			}
+		}
+
 
 		// Show the primary stage
 		primaryStage.show();
@@ -133,7 +156,11 @@ public class ViewManager {
 
 	protected void setDefaultTheme(String theme) {
 		defaultTheme = theme;
-		setDefaultValue("defaults.json", "theme", theme);
+		setDefaultValue("theme", theme);
+	}
+
+	protected void setDefaultPage(JSONObject page) {
+		setDefaultValue("page", page);
 	}
 
 	private void loadLocations() {
@@ -153,6 +180,10 @@ public class ViewManager {
 	}
 
 	public void setSceneToLocationView(Location location) {
+		JSONObject page = new JSONObject();
+		page.put("type", "beach");
+		page.put("name", location.getName());
+		setDefaultValue("page",page);
 		// If we haven't already created the location view for this location, create it
 		if (!locationViews.containsKey(location)) {
 			createLocationView(location);
@@ -184,6 +215,10 @@ public class ViewManager {
 	}
 
 	public void setSceneToFavouritesView() {
+		JSONObject page = new JSONObject();
+		page.put("type", "favourites");
+		page.put("name", "null");
+		setDefaultValue("page",page);
 		// If the favourites view hasn't been created yet, then make it
 		if (favouritesView == null || locationsHaveChanged) {
 			createFavouritesView();
