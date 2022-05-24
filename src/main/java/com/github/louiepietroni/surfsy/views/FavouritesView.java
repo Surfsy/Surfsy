@@ -80,7 +80,7 @@ public class FavouritesView {
 		// Add new beach
 		addFavouritesAddition();
 
-		//When the page is reloaded we want it to maintain the state it was in before
+		// When the page is reloaded we want it to maintain the state it was in before
 		setState();
 	}
 
@@ -133,13 +133,12 @@ public class FavouritesView {
 		var airTemperature = location.getDataAtTime("Air Temperature", 0, currentHour);
 
 		Node nameBox = new VBox(ViewManager.createHeadingText(location.getName()));
-		Node dataBox = new VBox(ViewManager.createParagraphText(String.format("%.2fºC and %.2f mph", airTemperature, windSpeed)));
+		Node dataBox = new VBox(
+				ViewManager.createParagraphText(String.format("%.2fºC and %.2f mph", airTemperature, windSpeed)));
 		Node infoBox = new VBox(nameBox, dataBox);
 
 		JFXButton delete = ViewManager.createButton("🚮");
 		delete.setButtonType(JFXButton.ButtonType.RAISED);
-		delete.setStyle("-fx-background-radius: 30");
-		delete.setPrefSize(60, 60);
 		delete.setVisible(false);
 
 		// Create the deletion dialogue
@@ -181,11 +180,11 @@ public class FavouritesView {
 		VBox buffer = new VBox();
 		buffer.setMinSize(10, 10);
 		HBox graphic;
-		//if (moreThanOneLocation) {
-			graphic = new HBox(delete, buffer, infoBox);
-		//} else {
-		//	graphic = new HBox(dataBox);
-		//}
+		// if (moreThanOneLocation) {
+		graphic = new HBox(delete, buffer, infoBox);
+		// } else {
+		// graphic = new HBox(dataBox);
+		// }
 		graphic.setAlignment(Pos.CENTER_LEFT);
 
 		var locationSummary = new JFXButton(" ", graphic);
@@ -194,8 +193,6 @@ public class FavouritesView {
 		locationSummary.setPrefSize(330, 120);
 		locationSummary.setAlignment(Pos.CENTER_LEFT);
 		locationSummary.setOnMouseClicked(e -> Surfsy.getViewManager().setSceneToLocationView(location));
-
-
 
 		return locationSummary;
 
@@ -307,7 +304,10 @@ public class FavouritesView {
 		plusButton.getStyleClass().add("plus-button");
 		plusButton.setPrefSize(45, 45);
 
-		plusButton.setOnAction(e -> {toggleEditMode(); setDeleteButtonVisibility(favouritesViewInEditMode);});
+		plusButton.setOnAction(e -> {
+			toggleEditMode();
+			setDeleteButtonVisibility(favouritesViewInEditMode);
+		});
 
 		JFXButton suggestedSearch = new JFXButton("❤");
 		suggestedSearch.setButtonType(JFXButton.ButtonType.RAISED);
@@ -333,27 +333,27 @@ public class FavouritesView {
 
 		plusBox.getChildren().add(buff);
 		plusBox.getChildren().add(plus);
-		//plus.onMouseClickedProperty();
+		// plus.onMouseClickedProperty();
 
 	}
 
-	private void toggleEditMode(){
+	private void toggleEditMode() {
 
 		favouritesViewInEditMode = !favouritesViewInEditMode;
 
 	}
 
-	private void setState(){
+	private void setState() {
 
-		if(favouritesViewInEditMode){
+		if (favouritesViewInEditMode) {
 			editButtonNodeList.animateList();
 			setDeleteButtonVisibility(true);
 		}
 
 	}
 
-	private void setDeleteButtonVisibility(boolean visible){
-		for (JFXButton summary: locationSummaryButtons) {
+	private void setDeleteButtonVisibility(boolean visible) {
+		for (JFXButton summary : locationSummaryButtons) {
 			HBox graphic = (HBox) summary.getGraphic();
 			graphic.getChildren().get(0).setVisible(visible);
 		}
