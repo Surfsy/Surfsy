@@ -52,7 +52,7 @@ public class CameraView {
     }
 
     private void addBackButton(){
-        StackPane plus = new StackPane();
+        BorderPane plus = new BorderPane();
         plus.setMinSize(60, 60);
 
         StackPane buff = new StackPane();
@@ -60,14 +60,14 @@ public class CameraView {
 
         JFXButton exitButton = new JFXButton();
         exitButton.setButtonType(JFXButton.ButtonType.RAISED);
-        exitButton.setStyle("-fx-background-radius: 30");
         exitButton.getStyleClass().add("back-button");
         exitButton.setPrefSize(45, 45);
         exitButton.setOnAction(e -> Surfsy.getViewManager().setSceneToLocationView(location));
+        plus.setOnMouseClicked(e -> Surfsy.getViewManager().setSceneToLocationView(location));
 
-        plus.getChildren().add(exitButton);
+        plus.setCenter(exitButton);
 
-        exitBox.setCenter(exitButton);
+        exitBox.setCenter(plus);
         exitBox.setLeft(buff);
     }
 }
