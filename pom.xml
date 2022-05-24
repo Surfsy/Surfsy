@@ -22,14 +22,6 @@
 </repositories>
 
     <dependencies>
-
-		<dependency>
-			<groupId>com.github.hervegirod</groupId>
-			<artifactId>fxsvgimage</artifactId>
-			<version>1.0b2</version>
-		  </dependency>
-
-
         <!--        Mapping tool-->
         <dependency>
             <groupId>com.sothawo</groupId>
