@@ -15,6 +15,7 @@ import com.jfoenix.controls.JFXRippler.RipplerMask;
 import com.jfoenix.controls.JFXRippler.RipplerPos;
 
 import javafx.css.PseudoClass;
+import javafx.scene.input.MouseEvent;
 import org.girod.javafx.svgimage.SVGImage;
 import org.girod.javafx.svgimage.SVGLoader;
 
@@ -32,6 +33,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
+import org.w3c.dom.NodeList;
 
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
@@ -56,7 +58,8 @@ public class FavouritesView {
 	private JFXButton themeButton;
 
 	private List<JFXButton> locationSummaryButtons = new LinkedList<>();
-	private boolean inEditMode = false;
+	private static boolean favouritesViewInEditMode = false;
+	private JFXNodesList editButtonNodeList = new JFXNodesList();
 
 	public FavouritesView(List<Location> favourites) {
 		scene.getStylesheets().clear();
@@ -76,6 +79,9 @@ public class FavouritesView {
 		addFavouritesSummaries();
 		// Add new beach
 		addFavouritesAddition();
+
+		//When the page is reloaded we want it to maintain the state it was in before
+		setState();
 	}
 
 	private void configureViews() {
@@ -130,12 +136,11 @@ public class FavouritesView {
 		Node windBox = new VBox(ViewManager.createParagraphText(String.format("%.2f ºC", airTemperature)));
 		Node dataBox = new VBox(temperatureBox, windBox);
 
-		//JFXButton delete = ViewManager.createButton("🚮");
-		JFXButton delete = ViewManager.createButton("\uD83D\uDEAE");
+		JFXButton delete = ViewManager.createButton("🚮");
 		delete.setButtonType(JFXButton.ButtonType.RAISED);
 		delete.setStyle("-fx-background-radius: 30");
 		delete.setPrefSize(60, 60);
-		delete.setVisible(false);
+		delete.setVisible(favouritesViewInEditMode);
 
 		// Create the deletion dialogue
 		var dialog = new JFXDialog();
@@ -169,27 +174,18 @@ public class FavouritesView {
 		// Only way to access background property of dialogue
 		((StackPane) dialogue_contents.getParent()).setBackground(null);
 
-		dialogue_confirm.setOnAction(e -> {
-			deleteLocation(location);
-		});
-
-		dialogue_cancel.setOnAction(e -> {
-			dialog.close();
-		});
-
-		delete.setOnAction(e -> {
-
-			dialog.show(rootStack);
-		});
+		dialogue_confirm.setOnAction(e -> deleteLocation(location));
+		dialogue_cancel.setOnAction(e -> dialog.close());
+		delete.setOnAction(e -> dialog.show(rootStack));
 
 		VBox buffer = new VBox();
 		buffer.setMinSize(10, 10);
 		HBox graphic;
-		if (moreThanOneLocation) {
+		//if (moreThanOneLocation) {
 			graphic = new HBox(delete, buffer, dataBox);
-		} else {
-			graphic = new HBox(dataBox);
-		}
+		//} else {
+		//	graphic = new HBox(dataBox);
+		//}
 		graphic.setAlignment(Pos.CENTER_LEFT);
 
 		var locationSummary = new JFXButton(location.getName(), graphic);
@@ -311,7 +307,7 @@ public class FavouritesView {
 		plusButton.getStyleClass().add("plus-button");
 		plusButton.setPrefSize(45, 45);
 
-		plusButton.setOnAction(e -> toggleEditAndButtonVisibility());
+		plusButton.setOnAction(e -> toggleEditModeAndButtonVisibility());
 
 		JFXButton suggestedSearch = new JFXButton("❤");
 		suggestedSearch.setButtonType(JFXButton.ButtonType.RAISED);
@@ -327,14 +323,13 @@ public class FavouritesView {
 		mapSearch.setPrefSize(35, 35);
 		mapSearch.setOnAction(e -> Surfsy.getViewManager().setSceneToAddMapView());
 
-		JFXNodesList nodesList = new JFXNodesList();
-		nodesList.setRotate(180);
-		nodesList.addAnimatedNode(plusButton);
-		nodesList.addAnimatedNode(suggestedSearch);
-		nodesList.addAnimatedNode(mapSearch);
-		nodesList.setSpacing(10d);
+		editButtonNodeList.setRotate(180);
+		editButtonNodeList.addAnimatedNode(plusButton);
+		editButtonNodeList.addAnimatedNode(suggestedSearch);
+		editButtonNodeList.addAnimatedNode(mapSearch);
+		editButtonNodeList.setSpacing(10d);
 
-		plus.getChildren().add(nodesList);
+		plus.getChildren().add(editButtonNodeList);
 
 		plusBox.getChildren().add(buff);
 		plusBox.getChildren().add(plus);
@@ -342,13 +337,21 @@ public class FavouritesView {
 
 	}
 
-	private void toggleEditAndButtonVisibility(){
+	private void toggleEditModeAndButtonVisibility(){
 
-		inEditMode = !inEditMode;
+		favouritesViewInEditMode = !favouritesViewInEditMode;
 
 		for (JFXButton summary: locationSummaryButtons) {
 			HBox graphic = (HBox) summary.getGraphic();
-			graphic.getChildren().get(0).setVisible(inEditMode);
+			graphic.getChildren().get(0).setVisible(favouritesViewInEditMode);
+		}
+
+	}
+
+	private void setState(){
+
+		if(favouritesViewInEditMode){
+			editButtonNodeList.animateList();
 		}
 
 	}
