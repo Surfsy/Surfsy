@@ -1,5 +1,6 @@
-Running the code: 
-- Open the project in Intellij and press the green triangle button, making sure to run the "Sursfy" config
+Running the code:
+- The main class is called "Surfsy.java"
+- Open the project in IntelliJ and press the run (green triangle) button, making sure to run the "Sursfy" config
 
 Libraries Used:
 - JavaFX
