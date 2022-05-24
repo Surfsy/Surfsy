@@ -140,7 +140,7 @@ public class FavouritesView {
 		delete.setButtonType(JFXButton.ButtonType.RAISED);
 		delete.setStyle("-fx-background-radius: 30");
 		delete.setPrefSize(60, 60);
-		delete.setVisible(favouritesViewInEditMode);
+		delete.setVisible(false);
 
 		// Create the deletion dialogue
 		var dialog = new JFXDialog();
@@ -307,7 +307,7 @@ public class FavouritesView {
 		plusButton.getStyleClass().add("plus-button");
 		plusButton.setPrefSize(45, 45);
 
-		plusButton.setOnAction(e -> toggleEditModeAndButtonVisibility());
+		plusButton.setOnAction(e -> {toggleEditMode(); setDeleteButtonVisibility(favouritesViewInEditMode);});
 
 		JFXButton suggestedSearch = new JFXButton("❤");
 		suggestedSearch.setButtonType(JFXButton.ButtonType.RAISED);
@@ -337,14 +337,9 @@ public class FavouritesView {
 
 	}
 
-	private void toggleEditModeAndButtonVisibility(){
+	private void toggleEditMode(){
 
 		favouritesViewInEditMode = !favouritesViewInEditMode;
-
-		for (JFXButton summary: locationSummaryButtons) {
-			HBox graphic = (HBox) summary.getGraphic();
-			graphic.getChildren().get(0).setVisible(favouritesViewInEditMode);
-		}
 
 	}
 
@@ -352,7 +347,15 @@ public class FavouritesView {
 
 		if(favouritesViewInEditMode){
 			editButtonNodeList.animateList();
+			setDeleteButtonVisibility(true);
 		}
 
+	}
+
+	private void setDeleteButtonVisibility(boolean visible){
+		for (JFXButton summary: locationSummaryButtons) {
+			HBox graphic = (HBox) summary.getGraphic();
+			graphic.getChildren().get(0).setVisible(visible);
+		}
 	}
 }
