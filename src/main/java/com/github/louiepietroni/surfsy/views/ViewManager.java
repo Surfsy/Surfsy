@@ -141,6 +141,12 @@ public class ViewManager {
 		return n;
 	}
 
+	public static Text createHeadingText(String name) {
+		var n = new Text(name);
+		n.getStyleClass().add("h2");
+		return n;
+	}
+
 	protected FavouritesView getFavouritesView() {
 		return favouritesView;
 	}

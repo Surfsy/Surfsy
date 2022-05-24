@@ -132,9 +132,9 @@ public class FavouritesView {
 		var windSpeed = location.getDataAtTime("Wind Speed", 0, currentHour);
 		var airTemperature = location.getDataAtTime("Air Temperature", 0, currentHour);
 
-		Node temperatureBox = new VBox(ViewManager.createParagraphText(String.format("%.2f mph", windSpeed)));
-		Node windBox = new VBox(ViewManager.createParagraphText(String.format("%.2f ºC", airTemperature)));
-		Node dataBox = new VBox(temperatureBox, windBox);
+		Node nameBox = new VBox(ViewManager.createHeadingText(location.getName()));
+		Node dataBox = new VBox(ViewManager.createParagraphText(String.format("%.2fºC and %.2f mph", airTemperature, windSpeed)));
+		Node infoBox = new VBox(nameBox, dataBox);
 
 		JFXButton delete = ViewManager.createButton("🚮");
 		delete.setButtonType(JFXButton.ButtonType.RAISED);
@@ -182,17 +182,17 @@ public class FavouritesView {
 		buffer.setMinSize(10, 10);
 		HBox graphic;
 		//if (moreThanOneLocation) {
-			graphic = new HBox(delete, buffer, dataBox);
+			graphic = new HBox(delete, buffer, infoBox);
 		//} else {
 		//	graphic = new HBox(dataBox);
 		//}
 		graphic.setAlignment(Pos.CENTER_LEFT);
 
-		var locationSummary = new JFXButton(location.getName(), graphic);
+		var locationSummary = new JFXButton(" ", graphic);
 		locationSummary.setButtonType(ButtonType.RAISED);
 		locationSummary.getStyleClass().addAll("widget-favourite-button", "widget-labelled");
 		locationSummary.setPrefSize(330, 120);
-		locationSummary.setAlignment(Pos.BASELINE_LEFT);
+		locationSummary.setAlignment(Pos.CENTER_LEFT);
 		locationSummary.setOnMouseClicked(e -> Surfsy.getViewManager().setSceneToLocationView(location));
 
 
