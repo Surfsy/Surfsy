@@ -16,8 +16,6 @@ import com.jfoenix.controls.JFXRippler.RipplerPos;
 
 import javafx.css.PseudoClass;
 import javafx.scene.input.MouseEvent;
-import org.girod.javafx.svgimage.SVGImage;
-import org.girod.javafx.svgimage.SVGLoader;
 
 import javafx.geometry.Insets;
 import javafx.geometry.NodeOrientation;

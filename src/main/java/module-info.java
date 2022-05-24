@@ -13,7 +13,6 @@ module com.github.louiepietroni.surfsy {
 	requires org.json;
 	requires com.sothawo.mapjfx;
 	requires com.jfoenix;
-	requires fxsvgimage;
 	requires json.simple;
 
 	opens com.github.louiepietroni.surfsy to javafx.fxml;
