@@ -457,7 +457,7 @@ public class LocationView {
 		dayButton.setPrefSize(42, 42);
 		dayButton.setOnAction(e -> updateDay(buttonDay));
 
-		dayButton.setText(now.format(DateTimeFormatter.ofPattern("dd")));
+		dayButton.setText(now.format(DateTimeFormatter.ofPattern("dd /\nMMM")));
 
 		return dayButton;
 	}
