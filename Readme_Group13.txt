@@ -8,3 +8,5 @@ Libraries Used:
 	- JavaFX material design library
 - mapjfx - https://github.com/sothawo/mapjfx
 	- JavaFX MapView node
+- json-simple - https://github.com/fangyidong/json-simple
+    - json encoding and decoding
