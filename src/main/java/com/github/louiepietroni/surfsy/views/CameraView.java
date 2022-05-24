@@ -61,7 +61,7 @@ public class CameraView {
         JFXButton exitButton = new JFXButton();
         exitButton.setButtonType(JFXButton.ButtonType.RAISED);
         exitButton.setStyle("-fx-background-radius: 30");
-        exitButton.getStyleClass().add("plus-button");
+        exitButton.getStyleClass().add("back-button");
         exitButton.setPrefSize(45, 45);
         exitButton.setOnAction(e -> Surfsy.getViewManager().setSceneToLocationView(location));
 
