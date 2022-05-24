@@ -141,7 +141,7 @@
                         <id>default-cli</id>
                         <configuration>
                             <mainClass>
-                                com.github.louiepietroni.surfsy/com.github.louiepietroni.surfsy.HelloApplication
+                                com.github.louiepietroni.surfsy.Surfsy
                             </mainClass>
                             <launcher>app</launcher>
                             <jlinkZipName>app</jlinkZipName>
